@@ -4,33 +4,34 @@
 	"version": "0.0.1",
 	"private": false,
 	"description": "Use the Microsoft Edge (Chromium) Network tool from within Visual Studio Code to see your site's network requests",
-	"homepage": "https://github.com/CodeEditorLand/Foundation#readme",
+	"keywords": [
+		"land"
+	],
+	"homepage": "HTTPS://GitHub.Com/CodeEditorLand/LandEdgeDevToolsNetwork#readme",
 	"bugs": {
-		"url": "https://github.com/CodeEditorLand/Foundation/issues"
+		"url": "HTTPS://GitHub.Com/CodeEditorLand/LandEdgeDevToolsNetwork/issues"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/CodeEditorLand/Foundation.git"
+		"url": "git+HTTPS://github.com/CodeEditorLand/LandEdgeDevToolsNetwork.git"
 	},
 	"license": "SEE LICENSE IN LICENSE",
 	"author": {
-		"name": "Playform",
-		"email": "Hello@Playform.Cloud",
-		"url": "https://playform.cloud"
+		"name": "🌆 — Land —",
+		"email": "Land@PlayForm.Cloud",
+		"url": "HTTPS://Land.PlayForm.Cloud"
 	},
 	"type": "module",
 	"main": "./out/extension",
 	"scripts": {
+		"Document": "Document 'Source/**/*.ts'",
 		"build": "npm run build-wp && npm run build-post",
 		"build-and-lint": "npm run build && npm run lint",
 		"build-debug": "npm run build-wp && ts-node postBuildStep.ts debug",
 		"build-post": "ts-node postBuildStep.ts",
 		"build-watch": "npm run build && npm run watch",
 		"build-wp": "webpack",
-		"package": "vsce package --out network-edge-devtools.vsix",
-		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
-		"vscode:prepublish": "npm run build-and-lint",
-		"watch": "npm run watch-wp",
+		"prepublishOnly": "Build 'Source/**/*.ts'",
 		"watch-wp": "webpack --watch"
 	},
 	"contributes": {
@@ -401,27 +402,16 @@
 		}
 	},
 	"dependencies": {
-		"vscode-chrome-debug-core": "6.7.51",
-		"vscode-extension-telemetry": "0.1.1",
-		"ws": "7.1.0"
+		"ws": "8.17.0"
 	},
 	"devDependencies": {
-		"@types/fs-extra": "8.0.0",
-		"@types/jest": "24.0.15",
-		"@types/node": "12.6.8",
-		"@types/vscode": "1.36.0",
-		"@types/ws": "6.0.1",
-		"fs-extra": "8.1.0",
-		"jest": "24.8.0",
-		"ts-jest": "24.0.2",
-		"ts-loader": "6.0.4",
-		"ts-node": "8.3.0",
-		"typescript": "3.5.3",
-		"typescript-esbuild": "0.4.5",
-		"vsce": "1.65.0",
-		"vscode-test": "1.0.2",
-		"webpack": "4.36.1",
-		"webpack-cli": "3.3.6"
+		"@playform/build": "0.0.7",
+		"@playform/document": "0.0.6",
+		"@types/fs-extra": "11.0.4",
+		"@types/node": "20.12.7",
+		"@types/ws": "8.5.10",
+		"fs-extra": "11.2.0",
+		"ts-loader": "9.5.1"
 	},
 	"publishConfig": {
 		"access": "public"
