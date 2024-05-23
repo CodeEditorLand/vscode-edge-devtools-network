@@ -54,7 +54,6 @@ typings/
 .yarn-integrity
 
 # dotenv environment variables file
-.env
 
 # next.js build output
 .next
@@ -64,4 +63,3 @@ out/
 coverage/
 *.vsix
 
-package-lock.json
