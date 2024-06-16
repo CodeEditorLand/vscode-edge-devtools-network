@@ -380,7 +380,7 @@
 		}
 	},
 	"dependencies": {
-		"ws": "8.17.0"
+		"ws": "8.17.1"
 	},
 	"devDependencies": {
 		"@types/fs-extra": "11.0.4",
