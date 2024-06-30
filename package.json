@@ -1,17 +1,12 @@
 {
-	"name": "network-edge-devtools",
-	"displayName": "Network for Microsoft Edge (Chromium)",
-	"description": "Use the Microsoft Edge (Chromium) Network tool from within Visual Studio Code to see your site's network requests",
-	"main": "./out/extension",
-	"scripts": {
-		"build": "npm run build-wp && npm run build-post",
-		"build-and-lint": "npm run build && npm run lint",
-		"build-debug": "npm run build-wp && ts-node postBuildStep.ts debug",
-		"build-post": "ts-node postBuildStep.ts",
-		"build-watch": "npm run build && npm run watch",
-		"build-wp": "webpack",
-		"watch-wp": "webpack --watch"
-	},
+	"activationEvents": [
+		"onCommand:network-edge-devtools.attach",
+		"onCommand:network-edge-devtools.launch",
+		"onWebviewPanel:network-edge-devtools",
+		"onView:network-edge-devtools-view.targets",
+		"onDebug"
+	],
+	"aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
 	"contributes": {
 		"commands": [
 			{
@@ -358,13 +353,24 @@
 			]
 		}
 	},
-	"activationEvents": [
-		"onCommand:network-edge-devtools.attach",
-		"onCommand:network-edge-devtools.launch",
-		"onWebviewPanel:network-edge-devtools",
-		"onView:network-edge-devtools-view.targets",
-		"onDebug"
-	],
+	"dependencies": {
+		"ws": "8.17.1"
+	},
+	"description": "Use the Microsoft Edge (Chromium) Network tool from within Visual Studio Code to see your site's network requests",
+	"devDependencies": {
+		"@types/fs-extra": "11.0.4",
+		"@types/node": "20.14.9",
+		"@types/ws": "8.5.10",
+		"fs-extra": "11.2.0",
+		"ts-loader": "9.5.1"
+	},
+	"displayName": "Network for Microsoft Edge (Chromium)",
+	"extensionKind": "ui",
+	"galleryBanner": {
+		"color": "#5c2d91",
+		"theme": "dark"
+	},
+	"icon": "icon.png",
 	"jest": {
 		"moduleFileExtensions": [
 			"ts",
@@ -379,22 +385,16 @@
 			"^.+\\.tsx?$": "ts-jest"
 		}
 	},
-	"dependencies": {
-		"ws": "8.17.1"
-	},
-	"devDependencies": {
-		"@types/fs-extra": "11.0.4",
-		"@types/node": "20.14.9",
-		"@types/ws": "8.5.10",
-		"fs-extra": "11.2.0",
-		"ts-loader": "9.5.1"
-	},
-	"icon": "icon.png",
-	"galleryBanner": {
-		"color": "#5c2d91",
-		"theme": "dark"
-	},
+	"main": "./out/extension",
+	"name": "network-edge-devtools",
 	"preview": true,
-	"aiKey": "AIF-d9b70cd4-b9f9-4d70-929b-a071c400b217",
-	"extensionKind": "ui"
+	"scripts": {
+		"build": "npm run build-wp && npm run build-post",
+		"build-and-lint": "npm run build && npm run lint",
+		"build-debug": "npm run build-wp && ts-node postBuildStep.ts debug",
+		"build-post": "ts-node postBuildStep.ts",
+		"build-watch": "npm run build && npm run watch",
+		"build-wp": "webpack",
+		"watch-wp": "webpack --watch"
+	}
 }
