@@ -1,0 +1,82 @@
+<!DOCTYPE html><html class="default" lang="en"><head><meta charset="utf-8"/><meta name="keywords" content="@playform/document"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>network-edge-devtools</title><meta name="description" content="Documentation for network-edge-devtools"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><link rel="stylesheet" href="assets/custom.css"/><script defer src="assets/main.js"></script><script async src="assets/icons.js" id="tsd-icons-script"></script><script async src="assets/search.js" id="tsd-search-script"></script><script async src="assets/navigation.js" id="tsd-nav-script"></script></head><body><script>document.documentElement.dataset.theme = localStorage.getItem("tsd-theme") || "os";document.body.style.display="none";setTimeout(() => app?app.showPage():document.body.style.removeProperty("display"),500)</script><header class="tsd-page-toolbar"><div class="tsd-toolbar-contents container"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget tsd-toolbar-icon search no-caption"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-search"></use></svg></label><input type="text" id="tsd-search-field" aria-label="Search"/></div><div class="field"><div id="tsd-toolbar-links"></div></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">network-edge-devtools</a></div><div class="table-cell" id="tsd-widgets"><a href="#" class="tsd-widget tsd-toolbar-icon menu no-caption" data-toggle="menu" aria-label="Menu"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><use href="assets/icons.svg#icon-menu"></use></svg></a></div></div></header><div class="container container-main"><div class="col-content"><div class="tsd-page-title"><h2>network-edge-devtools</h2></div><div class="tsd-panel tsd-typography"><h1 align="center">
+  <br>
+  Visual Studio Code - Network for Microsoft Edge (Chromium)
+  <br>
+</h1>
+<h4 align="center">Show Edge browser Network tool inside Visual Studio Code editor and use it to know details about network requests.</h4>
+<p>A Visual Studio Code extension that allows to use the Edge browser Network tool
+from within the editor. The Network tool will connect to an instance of
+Microsoft Edge giving the ability to see network requests details.</p>
+<p><strong>Note</strong>: This extension only supports Microsoft Edge (Chromium)</p>
+<p><img src="media/demo.gif" alt="Network for Microsoft Edge - Demo"></p>
+<a id="md:using-the-extension" class="tsd-anchor"></a><h1 class="tsd-anchor-link">Using the Extension<a href="#md:using-the-extension" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><a id="md:getting-started" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Getting Started<a href="#md:getting-started" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>For use inside Visual Studio Code:</p>
+<ol>
+<li>Install any channel (Canary/Dev/etc.) of
+<a href="https://aka.ms/edgeinsider">Microsoft Edge (Chromium)</a>.</li>
+<li>Install the extension.</li>
+<li>Open the folder containing the project to work on.</li>
+</ol>
+<a id="md:using-the-tools" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Using the tools<a href="#md:using-the-tools" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>The extension operates in two modes - it can launch an instance of Microsoft
+Edge navigated to your app, or it can attach to a running instance of Microsoft
+Edge. Both modes requires you to be serving your web application from local web
+server, which is started from either a Visual Studio Code task or from your
+command-line. Using the <code>url</code> parameter you simply tell Visual Studio Code which
+URL to either open or launch in the browser.</p>
+<a id="md:other-optional-launch-config-fields" class="tsd-anchor"></a><h4 class="tsd-anchor-link">Other optional launch config fields<a href="#md:other-optional-launch-config-fields" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h4><ul>
+<li><code>browserPath</code>: The full path to the browser executable that will be
+launched. If not specified the most stable channel of Microsoft Edge
+(Chromium) will be launched from the default install location instead.</li>
+<li><code>hostname</code>: By default the extension searches for debuggable instances using
+<code>localhost</code>. If you are hosting your web app on a remote machine you can
+specify the hostname using this setting.</li>
+<li><code>port</code>: By default the extension will set the remote-debugging-port to
+<code>9222</code>. Use this option to specify a different port on which to connect.</li>
+</ul>
+<a id="md:launching-the-browser-via-the-side-bar-view" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Launching the browser via the side bar view<a href="#md:launching-the-browser-via-the-side-bar-view" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
+<li>Start Microsoft Edge via the side bar
+<ul>
+<li>Click the <code>Network for Microsoft Edge</code> view in the side bar.</li>
+<li>Click the <code>Open a new tab</code> icon to launch the browser (if it isn't open
+yet) and open a new tab.</li>
+</ul>
+</li>
+<li>Attach the Network tool via the side bar view
+<ul>
+<li>Click the <code>Attach</code> icon next to the tab to open the Network tool.</li>
+</ul>
+</li>
+</ul>
+<a id="md:launching-the-browser-manually" class="tsd-anchor"></a><h3 class="tsd-anchor-link">Launching the browser manually<a href="#md:launching-the-browser-manually" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h3><ul>
+<li>Start Microsoft Edge with remote-debugging enabled on port 9222:
+<ul>
+<li><code>msedge.exe --remote-debugging-port=9222</code></li>
+<li>Navigate the browser to the desired URL.</li>
+</ul>
+</li>
+<li>Attach the Network tool via a command:
+<ul>
+<li>Run the command <code>Network for Microsoft Edge: Attach to a target</code></li>
+<li>Select a target from the drop down.</li>
+</ul>
+</li>
+</ul>
+<a id="md:contributing" class="tsd-anchor"></a><h1 class="tsd-anchor-link">Contributing<a href="#md:contributing" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><p>This project welcomes contributions and suggestions. Most contributions require
+you to agree to a Contributor License Agreement (CLA) declaring that you have
+the right to, and actually do, grant us the rights to use your contribution. For
+details, visit <a href="https://cla.microsoft.com">https://cla.microsoft.com</a>.</p>
+<p>See
+<a href="https://github.com/microsoft/vscode-edge-devtools-network/blob/master/CONTRIBUTING.md">CONTRIBUTING.md</a>
+for more information.</p>
+<a id="md:other-information" class="tsd-anchor"></a><h1 class="tsd-anchor-link">Other information<a href="#md:other-information" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h1><a id="md:datatelemetry" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Data/Telemetry<a href="#md:datatelemetry" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>This project collects usage data and sends it to Microsoft to help improve our
+products and services. Read
+<a href="https://privacy.microsoft.com/en-US/privacystatement">Microsoft's privacy statement</a>
+to learn more.</p>
+<a id="md:reporting-security-issues" class="tsd-anchor"></a><h2 class="tsd-anchor-link">Reporting Security Issues<a href="#md:reporting-security-issues" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24"><use href="assets/icons.svg#icon-anchor"></use></svg></a></h2><p>Security issues and bugs should be reported privately, via email, to the
+Microsoft Security Response Center (MSRC) at
+<a href="mailto:secure@microsoft.com">secure@microsoft.com</a>. You should receive a
+response within 24 hours. If for some reason you do not, please follow up via
+email to ensure we received your original message. Further information,
+including the <a href="https://technet.microsoft.com/en-us/security/dn606155">MSRC PGP</a>
+key, can be found in the
+<a href="https://technet.microsoft.com/en-us/security/default">Security TechCenter</a>.</p>
+</div></div><div class="col-sidebar"><div class="page-menu"><div class="tsd-navigation settings"><details class="tsd-accordion"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>Settings</h3></summary><div class="tsd-accordion-details"><div class="tsd-filter-visibility"><span class="settings-label">Member Visibility</span><ul id="tsd-filter-options"><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-protected" name="protected"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Protected</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-inherited" name="inherited" checked/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>Inherited</span></label></li><li class="tsd-filter-item"><label class="tsd-filter-input"><input type="checkbox" id="tsd-filter-external" name="external"/><svg width="32" height="32" viewBox="0 0 32 32" aria-hidden="true"><rect class="tsd-checkbox-background" width="30" height="30" x="1" y="1" rx="6" fill="none"></rect><path class="tsd-checkbox-checkmark" d="M8.35422 16.8214L13.2143 21.75L24.6458 10.25" stroke="none" stroke-width="3.5" stroke-linejoin="round" fill="none"></path></svg><span>External</span></label></li></ul></div><div class="tsd-theme-toggle"><label class="settings-label" for="tsd-theme">Theme</label><select id="tsd-theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></div></div></details></div><details open class="tsd-accordion tsd-page-navigation"><summary class="tsd-accordion-summary"><h3><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><use href="assets/icons.svg#icon-chevronDown"></use></svg>On This Page</h3></summary><div class="tsd-accordion-details"><a href="#md:using-the-extension"><span>Using the <wbr/>Extension</span></a><ul><li><a href="#md:getting-started"><span>Getting <wbr/>Started</span></a></li><li><a href="#md:using-the-tools"><span>Using the tools</span></a></li><li><ul><li><ul><li><a href="#md:other-optional-launch-config-fields"><span>Other optional launch config fields</span></a></li></ul></li><li><a href="#md:launching-the-browser-via-the-side-bar-view"><span>Launching the browser via the side bar view</span></a></li><li><a href="#md:launching-the-browser-manually"><span>Launching the browser manually</span></a></li></ul></li></ul><a href="#md:contributing"><span>Contributing</span></a><a href="#md:other-information"><span>Other information</span></a><ul><li><a href="#md:datatelemetry"><span>Data/<wbr/>Telemetry</span></a></li><li><a href="#md:reporting-security-issues"><span>Reporting <wbr/>Security <wbr/>Issues</span></a></li></ul></div></details></div><div class="site-menu"><nav class="tsd-navigation"><a href="modules.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><use href="assets/icons.svg#icon-1"></use></svg><span>network-edge-devtools</span></a><ul class="tsd-small-nested-navigation" id="tsd-nav-container" data-base="."><li>Loading...</li></ul></nav></div></div></div><footer><p class="tsd-generator">Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></footer><div class="overlay"></div></body></html>
