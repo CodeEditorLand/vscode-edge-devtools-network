@@ -2,135 +2,148 @@
 // Licensed under the MIT License.
 
 export function applySelectTabPatch(content: string) {
-    const networkTabs = [
-        "network",
-        "network.blocked-urls",
-        "network.search-network-tab",
-        "headers",
-        "preview",
-        "response",
-        "timing",
-        "initiator",
-        "cookies",
-        "eventSource",
-        "webSocketFrames",
-        "preferences",
-        "workspace",
-        "experiments",
-        "blackbox",
-        "devices",
-        "throttling-conditions",
-        "emulation-geolocations",
-        "Shortcuts",
-    ];
+	const networkTabs = [
+		"network",
+		"network.blocked-urls",
+		"network.search-network-tab",
+		"headers",
+		"preview",
+		"response",
+		"timing",
+		"initiator",
+		"cookies",
+		"eventSource",
+		"webSocketFrames",
+		"preferences",
+		"workspace",
+		"experiments",
+		"blackbox",
+		"devices",
+		"throttling-conditions",
+		"emulation-geolocations",
+		"Shortcuts",
+	];
 
-    const condition = networkTabs.map((tab) => {
-        return `id !== '${tab}'`;
-    }).join(" && ");
+	const condition = networkTabs
+		.map((tab) => {
+			return `id !== '${tab}'`;
+		})
+		.join(" && ");
 
-    const pattern = /selectTab\(id,\s*userGesture,\s*forceFocus\)\s*{/g;
-    if (content.match(pattern)) {
-        return content.replace(pattern, `selectTab\(id, userGesture, forceFocus\) { if (${condition}) return false;`);
-    } else {
-        return null;
-    }
+	const pattern = /selectTab\(id,\s*userGesture,\s*forceFocus\)\s*{/g;
+	if (content.match(pattern)) {
+		return content.replace(
+			pattern,
+			`selectTab\(id, userGesture, forceFocus\) { if (${condition}) return false;`,
+		);
+	} else {
+		return null;
+	}
 }
 
 export function applyShowTabElement(content: string) {
-    const networkTabs = [
-        "network",
-        "network.blocked-urls",
-        "network.search-network-tab",
-        "headers",
-        "preview",
-        "response",
-        "timing",
-        "initiator",
-        "cookies",
-        "eventSource",
-        "webSocketFrames",
-        "preferences",
-        "workspace",
-        "experiments",
-        "blackbox",
-        "devices",
-        "throttling-conditions",
-        "emulation-geolocations",
-        "Shortcuts",
-    ];
+	const networkTabs = [
+		"network",
+		"network.blocked-urls",
+		"network.search-network-tab",
+		"headers",
+		"preview",
+		"response",
+		"timing",
+		"initiator",
+		"cookies",
+		"eventSource",
+		"webSocketFrames",
+		"preferences",
+		"workspace",
+		"experiments",
+		"blackbox",
+		"devices",
+		"throttling-conditions",
+		"emulation-geolocations",
+		"Shortcuts",
+	];
 
-    const condition = networkTabs.map((tab) => {
-        return `tab._id !== '${tab}'`;
-    }).join(" && ");
+	const condition = networkTabs
+		.map((tab) => {
+			return `tab._id !== '${tab}'`;
+		})
+		.join(" && ");
 
-    const pattern = /_showTabElement\(index,\s*tab\)\s*{/g;
-    if (content.match(pattern)) {
-        return content.replace(pattern, `_showTabElement\(index, tab\) { if (${condition}) return false;`);
-    } else {
-        return null;
-    }
+	const pattern = /_showTabElement\(index,\s*tab\)\s*{/g;
+	if (content.match(pattern)) {
+		return content.replace(
+			pattern,
+			`_showTabElement\(index, tab\) { if (${condition}) return false;`,
+		);
+	} else {
+		return null;
+	}
 }
 
 export function applyDrawerTabLocationPatch(content: string) {
-    const pattern = /this._showDrawer.bind\s*\(this,\s*false\),\s*'drawer-view',\s*true,\s*true/g;
-    if (content.match(pattern)) {
-        return content.replace(pattern, `this._showDrawer.bind\(this, false\), 'drawer-view', true, true, 'network.blocked-urls'`);
-    } else {
-        return null;
-    }
+	const pattern =
+		/this._showDrawer.bind\s*\(this,\s*false\),\s*'drawer-view',\s*true,\s*true/g;
+	if (content.match(pattern)) {
+		return content.replace(
+			pattern,
+			`this._showDrawer.bind\(this, false\), 'drawer-view', true, true, 'network.blocked-urls'`,
+		);
+	} else {
+		return null;
+	}
 }
 
 export function applyMainTabTabLocationPatch(content: string) {
-    const pattern = /InspectorFrontendHostInstance\),\s*'panel',\s*true,\s*true,\s*Root.Runtime.queryParam\('panel'\)/g;
-    if (content.match(pattern)) {
-        return content.replace(pattern, `InspectorFrontendHostInstance\), 'panel', true, true, 'network'`);
-    } else {
-        return null;
-    }
+	const pattern =
+		/InspectorFrontendHostInstance\),\s*'panel',\s*true,\s*true,\s*Root.Runtime.queryParam\('panel'\)/g;
+	if (content.match(pattern)) {
+		return content.replace(
+			pattern,
+			`InspectorFrontendHostInstance\), 'panel', true, true, 'network'`,
+		);
+	} else {
+		return null;
+	}
 }
 
-export function applyInspectorCommonCssPatch(content: string, isRelease?: boolean) {
-    const separator = (isRelease ? "\\n" : "\n"); // Release css is embedded in js
+export function applyInspectorCommonCssPatch(
+	content: string,
+	isRelease?: boolean,
+) {
+	const separator = isRelease ? "\\n" : "\n"; // Release css is embedded in js
 
-    const hideTopHeader =
-        `.main-tabbed-pane .tabbed-pane-header {
+	const hideTopHeader = `.main-tabbed-pane .tabbed-pane-header {
             visibility: hidden !important;
         }`.replace(/\n/g, separator);
 
-    const hideInspectBtn =
-        `.toolbar-button[aria-label='Select an element in the page to inspect it'] {
+	const hideInspectBtn =
+		`.toolbar-button[aria-label='Select an element in the page to inspect it'] {
             display: none !important;
         }`.replace(/\n/g, separator);
 
-    const unHideScreenCastBtn =
-        `.toolbar-button[aria-label='Toggle screencast'] {
+	const unHideScreenCastBtn =
+		`.toolbar-button[aria-label='Toggle screencast'] {
             visibility: visible !important;
         }`.replace(/\n/g, separator);
 
-    const topHeaderCSS =
-        hideTopHeader +
-        hideInspectBtn +
-        unHideScreenCastBtn;
+	const topHeaderCSS = hideTopHeader + hideInspectBtn + unHideScreenCastBtn;
 
-    const hideMoreToolsBtn =
-        `.toolbar-button[aria-label='More Tools'] {
+	const hideMoreToolsBtn = `.toolbar-button[aria-label='More Tools'] {
             display: none !important;
         }`.replace(/\n/g, separator);
 
-    const drawerCSS = hideMoreToolsBtn;
+	const drawerCSS = hideMoreToolsBtn;
 
-    const hideExportHarBtn =
-        `.toolbar-button[aria-label='Export HAR...'] {
+	const hideExportHarBtn = `.toolbar-button[aria-label='Export HAR...'] {
             display: none !important;
         }`.replace(/\n/g, separator);
 
-    const hidePrettyPrintBtn =
-        `.toolbar-button[aria-label='Pretty print'] {
+	const hidePrettyPrintBtn = `.toolbar-button[aria-label='Pretty print'] {
             display: none !important;
         }`.replace(/\n/g, separator);
 
-    const hideSomeContextMenuItems =
-        `.soft-context-menu-separator,
+	const hideSomeContextMenuItems = `.soft-context-menu-separator,
         .soft-context-menu-item[aria-label='Open in new tab'],
         .soft-context-menu-item[aria-label='Open in Sources panel'],
         .soft-context-menu-item[aria-label='Clear browser cache'],
@@ -140,33 +153,28 @@ export function applyInspectorCommonCssPatch(content: string, isRelease?: boolea
             display: none !important;
         }`.replace(/\n/g, separator);
 
-    const networkCSS =
-        hideExportHarBtn +
-        hidePrettyPrintBtn +
-        hideSomeContextMenuItems;
+	const networkCSS =
+		hideExportHarBtn + hidePrettyPrintBtn + hideSomeContextMenuItems;
 
-    const addCSS =
-        topHeaderCSS +
-        drawerCSS +
-        networkCSS;
+	const addCSS = topHeaderCSS + drawerCSS + networkCSS;
 
-    let result;
-    const pattern = /(:host-context\(\.platform-mac\)\s*\.monospace,)/g
-    if (content.match(pattern)) {
-        result = content.replace(pattern, `${addCSS}${separator} $1`);
-    } else {
-        return null;
-    }
+	let result;
+	const pattern = /(:host-context\(\.platform-mac\)\s*\.monospace,)/g;
+	if (content.match(pattern)) {
+		result = content.replace(pattern, `${addCSS}${separator} $1`);
+	} else {
+		return null;
+	}
 
-    const replaceFocusTabSlider =
-        `.tabbed-pane-tab-slider .enabled {
+	const replaceFocusTabSlider = `.tabbed-pane-tab-slider .enabled {
             display: none !important;
         }`.replace(/\n/g, separator);
 
-    const tabbedPanePattern = /(\.tabbed-pane-tab-slider\s*\.enabled\s*\{([^\}]*)?\})/g;
-    if (result.match(tabbedPanePattern)) {
-        return result.replace(tabbedPanePattern, replaceFocusTabSlider);
-    } else {
-        return null;
-    }
+	const tabbedPanePattern =
+		/(\.tabbed-pane-tab-slider\s*\.enabled\s*\{([^\}]*)?\})/g;
+	if (result.match(tabbedPanePattern)) {
+		return result.replace(tabbedPanePattern, replaceFocusTabSlider);
+	} else {
+		return null;
+	}
 }
