@@ -2,50 +2,51 @@
 // Licensed under the MIT License.
 
 import * as cp from "child_process";
-import * as fse from "fs-extra";
 import * as http from "http";
 import * as https from "https";
 import * as os from "os";
 import * as path from "path";
 import * as url from "url";
+import * as fse from "fs-extra";
 import * as vscode from "vscode";
 import * as debugCore from "vscode-chrome-debug-core";
 import TelemetryReporter from "vscode-extension-telemetry";
+
 import packageJson from "../package.json";
 import DebugTelemetryReporter from "./debugTelemetryReporter";
 
 export interface IDevToolsSettings {
-    hostname: string;
-    port: number;
-    useHttps: boolean;
-    defaultUrl: string;
-    userDataDir: string;
-    timeout: number;
+	hostname: string;
+	port: number;
+	useHttps: boolean;
+	defaultUrl: string;
+	userDataDir: string;
+	timeout: number;
 }
 
 export interface IUserConfig {
-    url: string;
-    urlFilter: string;
-    browserPath: string;
-    hostname: string;
-    port: number;
-    useHttps: boolean;
-    userDataDir: string | boolean;
-    webRoot: string;
-    pathMapping: IStringDictionary<string>;
-    sourceMapPathOverrides: IStringDictionary<string>;
-    sourceMaps: boolean;
-    timeout: number;
+	url: string;
+	urlFilter: string;
+	browserPath: string;
+	hostname: string;
+	port: number;
+	useHttps: boolean;
+	userDataDir: string | boolean;
+	webRoot: string;
+	pathMapping: IStringDictionary<string>;
+	sourceMapPathOverrides: IStringDictionary<string>;
+	sourceMaps: boolean;
+	timeout: number;
 }
 
 export interface IRuntimeConfig {
-    pathMapping: IStringDictionary<string>;
-    sourceMapPathOverrides: IStringDictionary<string>;
-    sourceMaps: boolean;
-    webRoot: string;
+	pathMapping: IStringDictionary<string>;
+	sourceMapPathOverrides: IStringDictionary<string>;
+	sourceMaps: boolean;
+	webRoot: string;
 }
 export interface IStringDictionary<T> {
-    [name: string]: T;
+	[name: string]: T;
 }
 
 export type Platform = "Windows" | "OSX" | "Linux";
@@ -58,19 +59,19 @@ export const SETTINGS_DEFAULT_URL = "about:blank";
 export const SETTINGS_WEBVIEW_NAME = "Network";
 export const SETTINGS_PREF_NAME = "devtools-preferences";
 export const SETTINGS_PREF_DEFAULTS = {
-    screencastEnabled: false,
-    uiTheme: '"dark"',
+	screencastEnabled: false,
+	uiTheme: '"dark"',
 };
 export const SETTINGS_VIEW_NAME = "network-edge-devtools-view";
 export const SETTINGS_DEFAULT_PATH_MAPPING: IStringDictionary<string> = {
-    "/": "${workspaceFolder}",
+	"/": "${workspaceFolder}",
 };
 export const SETTINGS_DEFAULT_PATH_OVERRIDES: IStringDictionary<string> = {
-    "meteor://💻app/*": "${webRoot}/*",
-    "webpack:///*": "*",
-    "webpack:///./*": "${webRoot}/*",
-    "webpack:///./~/*": "${webRoot}/node_modules/*",
-    "webpack:///src/*": "${webRoot}/*",
+	"meteor://💻app/*": "${webRoot}/*",
+	"webpack:///*": "*",
+	"webpack:///./*": "${webRoot}/*",
+	"webpack:///./~/*": "${webRoot}/node_modules/*",
+	"webpack:///src/*": "${webRoot}/*",
 };
 export const SETTINGS_DEFAULT_WEB_ROOT: string = "${workspaceFolder}";
 export const SETTINGS_DEFAULT_SOURCE_MAPS: boolean = true;
@@ -80,32 +81,32 @@ export const SETTINGS_DEFAULT_ATTACH_INTERVAL: number = 200;
 
 const WIN_APP_DATA = process.env.LOCALAPPDATA || "/";
 const WIN_MSEDGE_PATHS = [
-    "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",        // Stable
-    path.join(WIN_APP_DATA, "Microsoft\\Edge\\Application\\msedge.exe"),        // Stable localappdata
-    "C:\\Program Files (x86)\\Microsoft\\Edge Beta\\Application\\msedge.exe",   // Beta
-    path.join(WIN_APP_DATA, "Microsoft\\Edge Beta\\Application\\msedge.exe"),   // Beta localappdata
-    "C:\\Program Files (x86)\\Microsoft\\Edge Dev\\Application\\msedge.exe",    // Dev
-    path.join(WIN_APP_DATA, "Microsoft\\Edge Dev\\Application\\msedge.exe"),    // Dev localappdata
-    "C:\\Program Files (x86)\\Microsoft\\Edge SxS\\Application\\msedge.exe",    // Canary
-    path.join(WIN_APP_DATA, "Microsoft\\Edge SxS\\Application\\msedge.exe"),    // Canary localappdata
+	"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe", // Stable
+	path.join(WIN_APP_DATA, "Microsoft\\Edge\\Application\\msedge.exe"), // Stable localappdata
+	"C:\\Program Files (x86)\\Microsoft\\Edge Beta\\Application\\msedge.exe", // Beta
+	path.join(WIN_APP_DATA, "Microsoft\\Edge Beta\\Application\\msedge.exe"), // Beta localappdata
+	"C:\\Program Files (x86)\\Microsoft\\Edge Dev\\Application\\msedge.exe", // Dev
+	path.join(WIN_APP_DATA, "Microsoft\\Edge Dev\\Application\\msedge.exe"), // Dev localappdata
+	"C:\\Program Files (x86)\\Microsoft\\Edge SxS\\Application\\msedge.exe", // Canary
+	path.join(WIN_APP_DATA, "Microsoft\\Edge SxS\\Application\\msedge.exe"), // Canary localappdata
 ];
 const OSX_MSEDGE_PATHS = [
-    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
-    "/Applications/Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta",
-    "/Applications/Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev",
-    "/Applications/Microsoft Edge Canary.app/Contents/MacOS/Microsoft Edge Canary",
+	"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+	"/Applications/Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta",
+	"/Applications/Microsoft Edge Dev.app/Contents/MacOS/Microsoft Edge Dev",
+	"/Applications/Microsoft Edge Canary.app/Contents/MacOS/Microsoft Edge Canary",
 ];
 
 export interface IRemoteTargetJson {
-    [index: string]: string;
-    description: string;
-    devtoolsFrontendUrl: string;
-    faviconUrl: string;
-    id: string;
-    title: string;
-    type: string;
-    url: string;
-    webSocketDebuggerUrl: string;
+	[index: string]: string;
+	description: string;
+	devtoolsFrontendUrl: string;
+	faviconUrl: string;
+	id: string;
+	title: string;
+	type: string;
+	url: string;
+	webSocketDebuggerUrl: string;
 }
 
 /**
@@ -113,33 +114,36 @@ export interface IRemoteTargetJson {
  * @param uri The uri to request
  * @param options The options that should be used for the request
  */
-export function fetchUri(uri: string, options: https.RequestOptions = {}): Promise<string> {
-    return new Promise((resolve, reject) => {
-        const parsedUrl = url.parse(uri);
-        const get = (parsedUrl.protocol === "https:" ? https.get : http.get);
-        options = {
-            rejectUnauthorized: false,
-            ...parsedUrl,
-            ...options,
-        } as http.RequestOptions;
+export function fetchUri(
+	uri: string,
+	options: https.RequestOptions = {},
+): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const parsedUrl = url.parse(uri);
+		const get = parsedUrl.protocol === "https:" ? https.get : http.get;
+		options = {
+			rejectUnauthorized: false,
+			...parsedUrl,
+			...options,
+		} as http.RequestOptions;
 
-        get(options, (response) => {
-            let responseData = "";
-            response.on("data", (chunk) => {
-                responseData += chunk.toString();
-            });
-            response.on("end", () => {
-                // Sometimes the 'error' event is not fired. Double check here.
-                if (response.statusCode === 200) {
-                    resolve(responseData);
-                } else {
-                    reject(new Error(responseData.trim()));
-                }
-            });
-        }).on("error", (e) => {
-            reject(e);
-        });
-    });
+		get(options, (response) => {
+			let responseData = "";
+			response.on("data", (chunk) => {
+				responseData += chunk.toString();
+			});
+			response.on("end", () => {
+				// Sometimes the 'error' event is not fired. Double check here.
+				if (response.statusCode === 200) {
+					resolve(responseData);
+				} else {
+					reject(new Error(responseData.trim()));
+				}
+			});
+		}).on("error", (e) => {
+			reject(e);
+		});
+	});
 }
 
 /**
@@ -152,17 +156,22 @@ export function fetchUri(uri: string, options: https.RequestOptions = {}): Promi
  * @param target The target object from the json/list payload
  */
 export function fixRemoteWebSocket(
-    remoteAddress: string,
-    remotePort: number,
-    target: IRemoteTargetJson): IRemoteTargetJson {
-    if (target.webSocketDebuggerUrl) {
-        const addressMatch = target.webSocketDebuggerUrl.match(/ws:\/\/([^/]+)\/?/);
-        if (addressMatch) {
-            const replaceAddress = `${remoteAddress}:${remotePort}`;
-            target.webSocketDebuggerUrl = target.webSocketDebuggerUrl.replace(addressMatch[1], replaceAddress);
-        }
-    }
-    return target;
+	remoteAddress: string,
+	remotePort: number,
+	target: IRemoteTargetJson,
+): IRemoteTargetJson {
+	if (target.webSocketDebuggerUrl) {
+		const addressMatch =
+			target.webSocketDebuggerUrl.match(/ws:\/\/([^/]+)\/?/);
+		if (addressMatch) {
+			const replaceAddress = `${remoteAddress}:${remotePort}`;
+			target.webSocketDebuggerUrl = target.webSocketDebuggerUrl.replace(
+				addressMatch[1],
+				replaceAddress,
+			);
+		}
+	}
+	return target;
 }
 
 /**
@@ -170,94 +179,128 @@ export function fixRemoteWebSocket(
  * @param hostname The remote hostname
  * @param port The remote port
  */
-export async function getListOfTargets(hostname: string, port: number, useHttps: boolean): Promise<any[]> {
-    const checkDiscoveryEndpoint = (uri: string) => {
-        return fetchUri(uri, { headers: { Host: "localhost" } });
-    };
+export async function getListOfTargets(
+	hostname: string,
+	port: number,
+	useHttps: boolean,
+): Promise<any[]> {
+	const checkDiscoveryEndpoint = (uri: string) => {
+		return fetchUri(uri, { headers: { Host: "localhost" } });
+	};
 
-    const protocol = (useHttps ? "https" : "http");
+	const protocol = useHttps ? "https" : "http";
 
-    let jsonResponse = "";
-    for (const endpoint of ["/json/list", "/json"]) {
-        try {
-            jsonResponse = await checkDiscoveryEndpoint(`${protocol}://${hostname}:${port}${endpoint}`);
-            if (jsonResponse) {
-                break;
-            }
-        } catch {
-            // Do nothing
-        }
-    }
+	let jsonResponse = "";
+	for (const endpoint of ["/json/list", "/json"]) {
+		try {
+			jsonResponse = await checkDiscoveryEndpoint(
+				`${protocol}://${hostname}:${port}${endpoint}`,
+			);
+			if (jsonResponse) {
+				break;
+			}
+		} catch {
+			// Do nothing
+		}
+	}
 
-    let result: IRemoteTargetJson[];
-    try {
-        result = JSON.parse(jsonResponse);
-    } catch {
-        result = [];
-    }
-    return result;
+	let result: IRemoteTargetJson[];
+	try {
+		result = JSON.parse(jsonResponse);
+	} catch {
+		result = [];
+	}
+	return result;
 }
 
 /**
  * Get the remote endpoint settings from the vscode configuration
  * @param config The settings specified by a launch config, if any
  */
-export function getRemoteEndpointSettings(config: Partial<IUserConfig> = {}): IDevToolsSettings {
-    const settings = vscode.workspace.getConfiguration(SETTINGS_STORE_NAME);
-    const hostname: string = config.hostname || settings.get("hostname") || SETTINGS_DEFAULT_HOSTNAME;
-    const port: number = config.port || settings.get("port") || SETTINGS_DEFAULT_PORT;
-    const useHttps: boolean = config.useHttps || settings.get("useHttps") || SETTINGS_DEFAULT_USE_HTTPS;
-    const defaultUrl: string = config.url || settings.get("defaultUrl") || SETTINGS_DEFAULT_URL;
-    const timeout: number = config.timeout || settings.get("timeout") || SETTINGS_DEFAULT_ATTACH_TIMEOUT;
+export function getRemoteEndpointSettings(
+	config: Partial<IUserConfig> = {},
+): IDevToolsSettings {
+	const settings = vscode.workspace.getConfiguration(SETTINGS_STORE_NAME);
+	const hostname: string =
+		config.hostname ||
+		settings.get("hostname") ||
+		SETTINGS_DEFAULT_HOSTNAME;
+	const port: number =
+		config.port || settings.get("port") || SETTINGS_DEFAULT_PORT;
+	const useHttps: boolean =
+		config.useHttps ||
+		settings.get("useHttps") ||
+		SETTINGS_DEFAULT_USE_HTTPS;
+	const defaultUrl: string =
+		config.url || settings.get("defaultUrl") || SETTINGS_DEFAULT_URL;
+	const timeout: number =
+		config.timeout ||
+		settings.get("timeout") ||
+		SETTINGS_DEFAULT_ATTACH_TIMEOUT;
 
-    // Check to see if we need to use a user data directory, which will force Edge to launch with a new manager process.
-    // We generate a temp directory if the user opted in explicitly with 'true' (which is the default),
-    // Or if it is not defined and they are not using a custom browser path (such as electron).
-    // This matches the behavior of the chrome and edge debug extensions.
-    const browserPath = config.browserPath || settings.get("browserPath") || "";
-    let userDataDir: string | boolean | undefined;
-    if (typeof config.userDataDir !== "undefined") {
-        userDataDir = config.userDataDir;
-    } else {
-        const settingsUserDataDir: string | boolean | undefined = settings.get("userDataDir");
-        if (typeof settingsUserDataDir !== "undefined") {
-            userDataDir = settingsUserDataDir;
-        }
-    }
+	// Check to see if we need to use a user data directory, which will force Edge to launch with a new manager process.
+	// We generate a temp directory if the user opted in explicitly with 'true' (which is the default),
+	// Or if it is not defined and they are not using a custom browser path (such as electron).
+	// This matches the behavior of the chrome and edge debug extensions.
+	const browserPath = config.browserPath || settings.get("browserPath") || "";
+	let userDataDir: string | boolean | undefined;
+	if (typeof config.userDataDir !== "undefined") {
+		userDataDir = config.userDataDir;
+	} else {
+		const settingsUserDataDir: string | boolean | undefined =
+			settings.get("userDataDir");
+		if (typeof settingsUserDataDir !== "undefined") {
+			userDataDir = settingsUserDataDir;
+		}
+	}
 
-    if (userDataDir === true || (typeof userDataDir === "undefined" && !browserPath)) {
-        // Generate a temp directory
-        userDataDir = path.join(os.tmpdir(), `network-edge-devtools-userdatadir_${port}`);
-    } else if (!userDataDir) {
-        // Explicit opt-out
-        userDataDir = "";
-    }
+	if (
+		userDataDir === true ||
+		(typeof userDataDir === "undefined" && !browserPath)
+	) {
+		// Generate a temp directory
+		userDataDir = path.join(
+			os.tmpdir(),
+			`network-edge-devtools-userdatadir_${port}`,
+		);
+	} else if (!userDataDir) {
+		// Explicit opt-out
+		userDataDir = "";
+	}
 
-    return { hostname, port, useHttps, defaultUrl, userDataDir, timeout };
+	return { hostname, port, useHttps, defaultUrl, userDataDir, timeout };
 }
 
 /**
  * Create a telemetry reporter that can be used for this extension
  * @param context The vscode context
  */
-export function createTelemetryReporter(context: vscode.ExtensionContext): Readonly<TelemetryReporter> {
-    if (packageJson && vscode.env.machineId !== "someValue.machineId") {
-        // Use the real telemetry reporter
-        return new TelemetryReporter(packageJson.name, packageJson.version, packageJson.aiKey);
-    } else {
-        // Fallback to a fake telemetry reporter
-        return new DebugTelemetryReporter();
-    }
+export function createTelemetryReporter(
+	context: vscode.ExtensionContext,
+): Readonly<TelemetryReporter> {
+	if (packageJson && vscode.env.machineId !== "someValue.machineId") {
+		// Use the real telemetry reporter
+		return new TelemetryReporter(
+			packageJson.name,
+			packageJson.version,
+			packageJson.aiKey,
+		);
+	} else {
+		// Fallback to a fake telemetry reporter
+		return new DebugTelemetryReporter();
+	}
 }
 
 /**
  * Get the current machine platform
  */
 export function getPlatform(): Platform {
-    const platform = os.platform();
-    return platform === "darwin" ? "OSX" :
-        platform === "win32" ? "Windows" :
-            "Linux";
+	const platform = os.platform();
+	return platform === "darwin"
+		? "OSX"
+		: platform === "win32"
+			? "Windows"
+			: "Linux";
 }
 
 /**
@@ -268,25 +311,28 @@ export function getPlatform(): Platform {
  * @param config The settings specified by a launch config, if any
  */
 export async function getBrowserPath(config: Partial<IUserConfig> = {}) {
-    const settings = vscode.workspace.getConfiguration(SETTINGS_STORE_NAME);
-    const browserPath = config.browserPath || settings.get("browserPath") || "";
+	const settings = vscode.workspace.getConfiguration(SETTINGS_STORE_NAME);
+	const browserPath = config.browserPath || settings.get("browserPath") || "";
 
-    if (!browserPath) {
-        const platform = getPlatform();
-        const searchPaths = platform === "Windows" ? WIN_MSEDGE_PATHS :
-            platform === "OSX" ? OSX_MSEDGE_PATHS :
-                [];
+	if (!browserPath) {
+		const platform = getPlatform();
+		const searchPaths =
+			platform === "Windows"
+				? WIN_MSEDGE_PATHS
+				: platform === "OSX"
+					? OSX_MSEDGE_PATHS
+					: [];
 
-        // Find the first one that exists
-        for (const p of searchPaths) {
-            if (await fse.pathExists(p)) {
-                return p;
-            }
-        }
-    }
+		// Find the first one that exists
+		for (const p of searchPaths) {
+			if (await fse.pathExists(p)) {
+				return p;
+			}
+		}
+	}
 
-    // Only return it if it exists
-    return (await fse.pathExists(browserPath) ? browserPath : "");
+	// Only return it if it exists
+	return (await fse.pathExists(browserPath)) ? browserPath : "";
 }
 
 /**
@@ -296,23 +342,28 @@ export async function getBrowserPath(config: Partial<IUserConfig> = {}) {
  * @param targetUrl The url of the page to open
  * @param userDataDir The user data directory for the launched instance
  */
-export function launchBrowser(browserPath: string, port: number, targetUrl: string, userDataDir?: string) {
-    const args = [
-        "--no-first-run",
-        "--no-default-browser-check",
-        `--remote-debugging-port=${port}`,
-        targetUrl,
-    ];
-    if (userDataDir) {
-        args.unshift(`--user-data-dir=${userDataDir}`);
-    }
+export function launchBrowser(
+	browserPath: string,
+	port: number,
+	targetUrl: string,
+	userDataDir?: string,
+) {
+	const args = [
+		"--no-first-run",
+		"--no-default-browser-check",
+		`--remote-debugging-port=${port}`,
+		targetUrl,
+	];
+	if (userDataDir) {
+		args.unshift(`--user-data-dir=${userDataDir}`);
+	}
 
-    const proc = cp.spawn(browserPath, args, {
-        detached: true,
-        stdio: "ignore",
-    });
+	const proc = cp.spawn(browserPath, args, {
+		detached: true,
+		stdio: "ignore",
+	});
 
-    proc.unref();
+	proc.unref();
 }
 
 /**
@@ -321,14 +372,20 @@ export function launchBrowser(browserPath: string, port: number, targetUrl: stri
  * @param port The port of the browser
  * @param tabUrl The url to open, if any
  */
-export async function openNewTab(hostname: string, port: number, tabUrl?: string) {
-    try {
-        const json = await fetchUri(`http://${hostname}:${port}/json/new?${tabUrl}`);
-        const target: IRemoteTargetJson | undefined = JSON.parse(json);
-        return target;
-    } catch {
-        return undefined;
-    }
+export async function openNewTab(
+	hostname: string,
+	port: number,
+	tabUrl?: string,
+) {
+	try {
+		const json = await fetchUri(
+			`http://${hostname}:${port}/json/new?${tabUrl}`,
+		);
+		const target: IRemoteTargetJson | undefined = JSON.parse(json);
+		return target;
+	} catch {
+		return undefined;
+	}
 }
 
 /**
@@ -336,7 +393,7 @@ export async function openNewTab(hostname: string, port: number, tabUrl?: string
  * @param uri The string from which to remove the trailing slash (if any)
  */
 export function removeTrailingSlash(uri: string) {
-    return (uri.endsWith("/") ? uri.slice(0, -1) : uri);
+	return uri.endsWith("/") ? uri.slice(0, -1) : uri;
 }
 
 /**
@@ -344,41 +401,56 @@ export function removeTrailingSlash(uri: string) {
  * The order of precedence is launch.json > extension settings > default values.
  * @param config A user specified config from launch.json
  */
-export function getRuntimeConfig(config: Partial<IUserConfig> = {}): IRuntimeConfig {
-    const settings = vscode.workspace.getConfiguration(SETTINGS_STORE_NAME);
-    const pathMapping = config.pathMapping || settings.get("pathMapping") || SETTINGS_DEFAULT_PATH_MAPPING;
-    const sourceMapPathOverrides =
-        config.sourceMapPathOverrides || settings.get("sourceMapPathOverrides") || SETTINGS_DEFAULT_PATH_OVERRIDES;
-    const webRoot = config.webRoot || settings.get("webRoot") || SETTINGS_DEFAULT_WEB_ROOT;
+export function getRuntimeConfig(
+	config: Partial<IUserConfig> = {},
+): IRuntimeConfig {
+	const settings = vscode.workspace.getConfiguration(SETTINGS_STORE_NAME);
+	const pathMapping =
+		config.pathMapping ||
+		settings.get("pathMapping") ||
+		SETTINGS_DEFAULT_PATH_MAPPING;
+	const sourceMapPathOverrides =
+		config.sourceMapPathOverrides ||
+		settings.get("sourceMapPathOverrides") ||
+		SETTINGS_DEFAULT_PATH_OVERRIDES;
+	const webRoot =
+		config.webRoot || settings.get("webRoot") || SETTINGS_DEFAULT_WEB_ROOT;
 
-    let sourceMaps = SETTINGS_DEFAULT_SOURCE_MAPS;
-    if (typeof config.sourceMaps !== "undefined") {
-        sourceMaps = config.sourceMaps;
-    } else {
-        const settingsSourceMaps: boolean | undefined = settings.get("sourceMaps");
-        if (typeof settingsSourceMaps !== "undefined") {
-            sourceMaps = settingsSourceMaps;
-        }
-    }
+	let sourceMaps = SETTINGS_DEFAULT_SOURCE_MAPS;
+	if (typeof config.sourceMaps !== "undefined") {
+		sourceMaps = config.sourceMaps;
+	} else {
+		const settingsSourceMaps: boolean | undefined =
+			settings.get("sourceMaps");
+		if (typeof settingsSourceMaps !== "undefined") {
+			sourceMaps = settingsSourceMaps;
+		}
+	}
 
-    // Resolve the paths with the webRoot set by the user
-    const resolvedOverrides: IStringDictionary<string> = {};
-    for (const pattern in sourceMapPathOverrides) {
-        if (sourceMapPathOverrides.hasOwnProperty(pattern)) {
-            const replacePattern = replaceWebRootInSourceMapPathOverridesEntry(webRoot, pattern);
-            const replacePatternValue = replaceWebRootInSourceMapPathOverridesEntry(
-                webRoot, sourceMapPathOverrides[pattern]);
+	// Resolve the paths with the webRoot set by the user
+	const resolvedOverrides: IStringDictionary<string> = {};
+	for (const pattern in sourceMapPathOverrides) {
+		if (sourceMapPathOverrides.hasOwnProperty(pattern)) {
+			const replacePattern = replaceWebRootInSourceMapPathOverridesEntry(
+				webRoot,
+				pattern,
+			);
+			const replacePatternValue =
+				replaceWebRootInSourceMapPathOverridesEntry(
+					webRoot,
+					sourceMapPathOverrides[pattern],
+				);
 
-            resolvedOverrides[replacePattern] = replacePatternValue;
-        }
-    }
+			resolvedOverrides[replacePattern] = replacePatternValue;
+		}
+	}
 
-    return {
-        pathMapping,
-        sourceMapPathOverrides: resolvedOverrides,
-        sourceMaps,
-        webRoot,
-    };
+	return {
+		pathMapping,
+		sourceMapPathOverrides: resolvedOverrides,
+		sourceMaps,
+		webRoot,
+	};
 }
 
 /**
@@ -386,14 +458,17 @@ export function getRuntimeConfig(config: Partial<IUserConfig> = {}): IRuntimeCon
  * @param webRoot The value to use for replacement.
  * @param entry The path containing the '${webRoot}' string that we will replace.
  */
-export function replaceWebRootInSourceMapPathOverridesEntry(webRoot: string, entry: string) {
-    if (webRoot) {
-        const webRootIndex = entry.indexOf("${webRoot}");
-        if (webRootIndex === 0) {
-            return entry.replace("${webRoot}", webRoot);
-        }
-    }
-    return entry;
+export function replaceWebRootInSourceMapPathOverridesEntry(
+	webRoot: string,
+	entry: string,
+) {
+	if (webRoot) {
+		const webRootIndex = entry.indexOf("${webRoot}");
+		if (webRootIndex === 0) {
+			return entry.replace("${webRoot}", webRoot);
+		}
+	}
+	return entry;
 }
 
 /**
@@ -404,50 +479,58 @@ export function replaceWebRootInSourceMapPathOverridesEntry(webRoot: string, ent
  * @param pathMapping The list of mappings from source map to authored file path
  */
 export function applyPathMapping(
-    sourcePath: string,
-    pathMapping: IStringDictionary<string>): string {
-    const forwardSlashSourcePath = sourcePath.replace(/\\/g, "/");
+	sourcePath: string,
+	pathMapping: IStringDictionary<string>,
+): string {
+	const forwardSlashSourcePath = sourcePath.replace(/\\/g, "/");
 
-    // Sort the overrides by length, large to small
-    const sortedOverrideKeys = Object.keys(pathMapping)
-        .sort((a, b) => b.length - a.length);
+	// Sort the overrides by length, large to small
+	const sortedOverrideKeys = Object.keys(pathMapping).sort(
+		(a, b) => b.length - a.length,
+	);
 
-    // Iterate the key/values, only apply the first one that matches.
-    for (const leftPattern of sortedOverrideKeys) {
-        const rightPattern = pathMapping[leftPattern];
+	// Iterate the key/values, only apply the first one that matches.
+	for (const leftPattern of sortedOverrideKeys) {
+		const rightPattern = pathMapping[leftPattern];
 
-        const asterisks = leftPattern.match(/\*/g) || [];
-        if (asterisks.length > 1) {
-            continue;
-        }
+		const asterisks = leftPattern.match(/\*/g) || [];
+		if (asterisks.length > 1) {
+			continue;
+		}
 
-        const replacePatternAsterisks = rightPattern.match(/\*/g) || [];
-        if (replacePatternAsterisks.length > asterisks.length) {
-            continue;
-        }
+		const replacePatternAsterisks = rightPattern.match(/\*/g) || [];
+		if (replacePatternAsterisks.length > asterisks.length) {
+			continue;
+		}
 
-        // Does it match?
-        const escapedLeftPattern = debugCore.utils.escapeRegexSpecialChars(leftPattern, "/*");
-        const leftRegexSegment = escapedLeftPattern
-            .replace(/\*/g, "(.*)")
-            .replace(/\\\\/g, "/");
-        const leftRegex = new RegExp(`^${leftRegexSegment}$`, "i");
-        const overridePatternMatches = forwardSlashSourcePath.match(leftRegex);
-        if (!overridePatternMatches) {
-            continue;
-        }
+		// Does it match?
+		const escapedLeftPattern = debugCore.utils.escapeRegexSpecialChars(
+			leftPattern,
+			"/*",
+		);
+		const leftRegexSegment = escapedLeftPattern
+			.replace(/\*/g, "(.*)")
+			.replace(/\\\\/g, "/");
+		const leftRegex = new RegExp(`^${leftRegexSegment}$`, "i");
+		const overridePatternMatches = forwardSlashSourcePath.match(leftRegex);
+		if (!overridePatternMatches) {
+			continue;
+		}
 
-        // Grab the value of the wildcard from the match above, replace the wildcard in the
-        // replacement pattern, and return the result.
-        const wildcardValue = overridePatternMatches[1];
-        let mappedPath = rightPattern.replace(/\*/g, wildcardValue);
-        mappedPath = debugCore.utils.properJoin(mappedPath); // Fix any ..'s
-        mappedPath = mappedPath.replace(
-            "${workspaceFolder}",
-            vscode.workspace.workspaceFolders ? vscode.workspace.workspaceFolders[0].uri.toString() : "" || "");
+		// Grab the value of the wildcard from the match above, replace the wildcard in the
+		// replacement pattern, and return the result.
+		const wildcardValue = overridePatternMatches[1];
+		let mappedPath = rightPattern.replace(/\*/g, wildcardValue);
+		mappedPath = debugCore.utils.properJoin(mappedPath); // Fix any ..'s
+		mappedPath = mappedPath.replace(
+			"${workspaceFolder}",
+			vscode.workspace.workspaceFolders
+				? vscode.workspace.workspaceFolders[0].uri.toString()
+				: "" || "",
+		);
 
-        return mappedPath;
-    }
+		return mappedPath;
+	}
 
-    return sourcePath;
+	return sourcePath;
 }
