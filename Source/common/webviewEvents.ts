@@ -1,47 +1,58 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License.
 
-export type WebviewEvent = "getState" | "getUrl" | "openInEditor" | "ready" | "setState" | "telemetry" | "websocket";
+export type WebviewEvent =
+	| "getState"
+	| "getUrl"
+	| "openInEditor"
+	| "ready"
+	| "setState"
+	| "telemetry"
+	| "websocket";
 export const webviewEventNames: WebviewEvent[] = [
-    "getState",
-    "getUrl",
-    "openInEditor",
-    "ready",
-    "setState",
-    "telemetry",
-    "websocket",
+	"getState",
+	"getUrl",
+	"openInEditor",
+	"ready",
+	"setState",
+	"telemetry",
+	"websocket",
 ];
 
 export type WebSocketEvent = "open" | "close" | "error" | "message";
 export const webSocketEventNames: WebSocketEvent[] = [
-    "open",
-    "close",
-    "error",
-    "message",
+	"open",
+	"close",
+	"error",
+	"message",
 ];
 
 export type TelemetryEvent = "enumerated" | "performance" | "error";
 
-export interface ITelemetryMeasures { [key: string]: number; }
-export interface ITelemetryProps { [key: string]: string; }
+export interface ITelemetryMeasures {
+	[key: string]: number;
+}
+export interface ITelemetryProps {
+	[key: string]: string;
+}
 
 export interface ITelemetryDataNumber {
-    event: "enumerated" | "performance";
-    name: string;
-    data: number;
+	event: "enumerated" | "performance";
+	name: string;
+	data: number;
 }
 export interface ITelemetryDataObject {
-    event: "error";
-    name: string;
-    data: object;
+	event: "error";
+	name: string;
+	data: object;
 }
 export type TelemetryData = ITelemetryDataNumber | ITelemetryDataObject;
 
 export interface IOpenEditorData {
-    url: string;
-    line: number;
-    column: number;
-    ignoreTabChanges: boolean;
+	url: string;
+	line: number;
+	column: number;
+	ignoreTabChanges: boolean;
 }
 
 /**
@@ -50,16 +61,17 @@ export interface IOpenEditorData {
  * @param emit The emit callback to invoke with the event and args
  */
 export function parseMessageFromChannel(
-    message: string,
-    emit: (eventName: WebviewEvent, args: string) => boolean): boolean {
-    for (const e of webviewEventNames) {
-        if (message.substr(0, e.length) === e && message[e.length] === ":") {
-            emit(e, message.substr(e.length + 1));
-            return true;
-        }
-    }
+	message: string,
+	emit: (eventName: WebviewEvent, args: string) => boolean,
+): boolean {
+	for (const e of webviewEventNames) {
+		if (message.substr(0, e.length) === e && message[e.length] === ":") {
+			emit(e, message.substr(e.length + 1));
+			return true;
+		}
+	}
 
-    return false;
+	return false;
 }
 
 /**
@@ -72,9 +84,10 @@ export function parseMessageFromChannel(
  * @param origin The origin (if any) to use with the postMessage call
  */
 export function encodeMessageForChannel(
-    postMessageCallback: (message: string) => void,
-    eventType: WebviewEvent,
-    args?: object) {
-    const message = `${eventType}:${JSON.stringify(args)}`;
-    postMessageCallback(message);
+	postMessageCallback: (message: string) => void,
+	eventType: WebviewEvent,
+	args?: object,
+) {
+	const message = `${eventType}:${JSON.stringify(args)}`;
+	postMessageCallback(message);
 }
