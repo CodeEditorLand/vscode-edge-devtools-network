@@ -359,7 +359,7 @@
 	"description": "Use the Microsoft Edge (Chromium) Network tool from within Visual Studio Code to see your site's network requests",
 	"devDependencies": {
 		"@types/fs-extra": "11.0.4",
-		"@types/node": "22.9.0",
+		"@types/node": "22.9.1",
 		"@types/ws": "8.5.13",
 		"fs-extra": "11.2.0",
 		"ts-loader": "9.5.1"
