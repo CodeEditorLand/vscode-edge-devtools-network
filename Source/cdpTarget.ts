@@ -63,6 +63,7 @@ export default class CDPTarget extends vscode.TreeItem {
 		// Populate the child nodes if we don't have any yet
 		if (!this.propertyName && this.children.length === 0) {
 			this.children = [];
+
 			for (const i of Object.getOwnPropertyNames(this.targetJson)) {
 				this.children.push(new CDPTarget(this.targetJson, i));
 			}

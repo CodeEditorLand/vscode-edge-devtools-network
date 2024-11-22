@@ -66,6 +66,7 @@ export default class LaunchDebugProvider
 
 		if (config && config.type === `${SETTINGS_STORE_NAME}.debug`) {
 			const targetUri: string = this.getUrlFromConfig(folder, config);
+
 			if (config.request && config.request === "attach") {
 				this.telemetryReporter.sendTelemetryEvent("debug/attach");
 				this.attach(this.context, targetUri, userConfig);
@@ -79,6 +80,7 @@ export default class LaunchDebugProvider
 		) {
 			const settings =
 				vscode.workspace.getConfiguration(SETTINGS_STORE_NAME);
+
 			if (settings.get("autoAttachViaDebuggerForEdge")) {
 				if (!userConfig.port) {
 					userConfig.port = SETTINGS_DEFAULT_EDGE_DEBUGGER_PORT;
@@ -118,6 +120,7 @@ export default class LaunchDebugProvider
 
 		if (config.file) {
 			outUrlString = config.file;
+
 			if (folder) {
 				outUrlString = outUrlString.replace(
 					"${workspaceFolder}",

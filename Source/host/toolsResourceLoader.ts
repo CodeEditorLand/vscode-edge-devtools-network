@@ -21,6 +21,7 @@ export default class ToolsResourceLoader {
 	public onResolvedUrlFromChannel(id: number, content: string) {
 		if (this.urlLoadResolvers.has(id)) {
 			const resolve = this.urlLoadResolvers.get(id);
+
 			if (resolve) {
 				resolve(content);
 			}
@@ -32,6 +33,7 @@ export default class ToolsResourceLoader {
 		if (url.substr(0, 7) === "http://" || url.substr(0, 8) === "https://") {
 			// Forward the cross domain request over to the extension
 			const id = this.urlLoadNextId++;
+
 			return new Promise((resolve: (url: string) => void) => {
 				this.urlLoadResolvers.set(id, resolve);
 				encodeMessageForChannel(

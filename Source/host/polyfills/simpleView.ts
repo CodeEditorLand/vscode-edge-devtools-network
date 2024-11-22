@@ -31,6 +31,7 @@ export function applySelectTabPatch(content: string) {
 		.join(" && ");
 
 	const pattern = /selectTab\(id,\s*userGesture,\s*forceFocus\)\s*{/g;
+
 	if (content.match(pattern)) {
 		return content.replace(
 			pattern,
@@ -71,6 +72,7 @@ export function applyShowTabElement(content: string) {
 		.join(" && ");
 
 	const pattern = /_showTabElement\(index,\s*tab\)\s*{/g;
+
 	if (content.match(pattern)) {
 		return content.replace(
 			pattern,
@@ -84,6 +86,7 @@ export function applyShowTabElement(content: string) {
 export function applyDrawerTabLocationPatch(content: string) {
 	const pattern =
 		/this._showDrawer.bind\s*\(this,\s*false\),\s*'drawer-view',\s*true,\s*true/g;
+
 	if (content.match(pattern)) {
 		return content.replace(
 			pattern,
@@ -97,6 +100,7 @@ export function applyDrawerTabLocationPatch(content: string) {
 export function applyMainTabTabLocationPatch(content: string) {
 	const pattern =
 		/InspectorFrontendHostInstance\),\s*'panel',\s*true,\s*true,\s*Root.Runtime.queryParam\('panel'\)/g;
+
 	if (content.match(pattern)) {
 		return content.replace(
 			pattern,
@@ -159,7 +163,9 @@ export function applyInspectorCommonCssPatch(
 	const addCSS = topHeaderCSS + drawerCSS + networkCSS;
 
 	let result;
+
 	const pattern = /(:host-context\(\.platform-mac\)\s*\.monospace,)/g;
+
 	if (content.match(pattern)) {
 		result = content.replace(pattern, `${addCSS}${separator} $1`);
 	} else {
@@ -172,6 +178,7 @@ export function applyInspectorCommonCssPatch(
 
 	const tabbedPanePattern =
 		/(\.tabbed-pane-tab-slider\s*\.enabled\s*\{([^\}]*)?\})/g;
+
 	if (result.match(tabbedPanePattern)) {
 		return result.replace(tabbedPanePattern, replaceFocusTabSlider);
 	} else {

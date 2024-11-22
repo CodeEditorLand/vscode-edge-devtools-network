@@ -67,6 +67,7 @@ export function parseMessageFromChannel(
 	for (const e of webviewEventNames) {
 		if (message.substr(0, e.length) === e && message[e.length] === ":") {
 			emit(e, message.substr(e.length + 1));
+
 			return true;
 		}
 	}

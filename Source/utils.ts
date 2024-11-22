@@ -19,6 +19,7 @@ export interface IDevToolsSettings {
 	hostname: string;
 	port: number;
 	useHttps: boolean;
+
 	defaultUrl: string;
 	userDataDir: string;
 	timeout: number;
@@ -80,6 +81,7 @@ export const SETTINGS_DEFAULT_ATTACH_TIMEOUT: number = 10000;
 export const SETTINGS_DEFAULT_ATTACH_INTERVAL: number = 200;
 
 const WIN_APP_DATA = process.env.LOCALAPPDATA || "/";
+
 const WIN_MSEDGE_PATHS = [
 	"C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe", // Stable
 	path.join(WIN_APP_DATA, "Microsoft\\Edge\\Application\\msedge.exe"), // Stable localappdata
@@ -90,6 +92,7 @@ const WIN_MSEDGE_PATHS = [
 	"C:\\Program Files (x86)\\Microsoft\\Edge SxS\\Application\\msedge.exe", // Canary
 	path.join(WIN_APP_DATA, "Microsoft\\Edge SxS\\Application\\msedge.exe"), // Canary localappdata
 ];
+
 const OSX_MSEDGE_PATHS = [
 	"/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
 	"/Applications/Microsoft Edge Beta.app/Contents/MacOS/Microsoft Edge Beta",
@@ -120,6 +123,7 @@ export function fetchUri(
 ): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const parsedUrl = url.parse(uri);
+
 		const get = parsedUrl.protocol === "https:" ? https.get : http.get;
 		options = {
 			rejectUnauthorized: false,
@@ -163,6 +167,7 @@ export function fixRemoteWebSocket(
 	if (target.webSocketDebuggerUrl) {
 		const addressMatch =
 			target.webSocketDebuggerUrl.match(/ws:\/\/([^/]+)\/?/);
+
 		if (addressMatch) {
 			const replaceAddress = `${remoteAddress}:${remotePort}`;
 			target.webSocketDebuggerUrl = target.webSocketDebuggerUrl.replace(
@@ -191,11 +196,13 @@ export async function getListOfTargets(
 	const protocol = useHttps ? "https" : "http";
 
 	let jsonResponse = "";
+
 	for (const endpoint of ["/json/list", "/json"]) {
 		try {
 			jsonResponse = await checkDiscoveryEndpoint(
 				`${protocol}://${hostname}:${port}${endpoint}`,
 			);
+
 			if (jsonResponse) {
 				break;
 			}
@@ -205,6 +212,7 @@ export async function getListOfTargets(
 	}
 
 	let result: IRemoteTargetJson[];
+
 	try {
 		result = JSON.parse(jsonResponse);
 	} catch {
@@ -221,18 +229,23 @@ export function getRemoteEndpointSettings(
 	config: Partial<IUserConfig> = {},
 ): IDevToolsSettings {
 	const settings = vscode.workspace.getConfiguration(SETTINGS_STORE_NAME);
+
 	const hostname: string =
 		config.hostname ||
 		settings.get("hostname") ||
 		SETTINGS_DEFAULT_HOSTNAME;
+
 	const port: number =
 		config.port || settings.get("port") || SETTINGS_DEFAULT_PORT;
+
 	const useHttps: boolean =
 		config.useHttps ||
 		settings.get("useHttps") ||
 		SETTINGS_DEFAULT_USE_HTTPS;
+
 	const defaultUrl: string =
 		config.url || settings.get("defaultUrl") || SETTINGS_DEFAULT_URL;
+
 	const timeout: number =
 		config.timeout ||
 		settings.get("timeout") ||
@@ -243,12 +256,15 @@ export function getRemoteEndpointSettings(
 	// Or if it is not defined and they are not using a custom browser path (such as electron).
 	// This matches the behavior of the chrome and edge debug extensions.
 	const browserPath = config.browserPath || settings.get("browserPath") || "";
+
 	let userDataDir: string | boolean | undefined;
+
 	if (typeof config.userDataDir !== "undefined") {
 		userDataDir = config.userDataDir;
 	} else {
 		const settingsUserDataDir: string | boolean | undefined =
 			settings.get("userDataDir");
+
 		if (typeof settingsUserDataDir !== "undefined") {
 			userDataDir = settingsUserDataDir;
 		}
@@ -296,6 +312,7 @@ export function createTelemetryReporter(
  */
 export function getPlatform(): Platform {
 	const platform = os.platform();
+
 	return platform === "darwin"
 		? "OSX"
 		: platform === "win32"
@@ -312,10 +329,12 @@ export function getPlatform(): Platform {
  */
 export async function getBrowserPath(config: Partial<IUserConfig> = {}) {
 	const settings = vscode.workspace.getConfiguration(SETTINGS_STORE_NAME);
+
 	const browserPath = config.browserPath || settings.get("browserPath") || "";
 
 	if (!browserPath) {
 		const platform = getPlatform();
+
 		const searchPaths =
 			platform === "Windows"
 				? WIN_MSEDGE_PATHS
@@ -354,6 +373,7 @@ export function launchBrowser(
 		`--remote-debugging-port=${port}`,
 		targetUrl,
 	];
+
 	if (userDataDir) {
 		args.unshift(`--user-data-dir=${userDataDir}`);
 	}
@@ -381,7 +401,9 @@ export async function openNewTab(
 		const json = await fetchUri(
 			`http://${hostname}:${port}/json/new?${tabUrl}`,
 		);
+
 		const target: IRemoteTargetJson | undefined = JSON.parse(json);
+
 		return target;
 	} catch {
 		return undefined;
@@ -405,23 +427,28 @@ export function getRuntimeConfig(
 	config: Partial<IUserConfig> = {},
 ): IRuntimeConfig {
 	const settings = vscode.workspace.getConfiguration(SETTINGS_STORE_NAME);
+
 	const pathMapping =
 		config.pathMapping ||
 		settings.get("pathMapping") ||
 		SETTINGS_DEFAULT_PATH_MAPPING;
+
 	const sourceMapPathOverrides =
 		config.sourceMapPathOverrides ||
 		settings.get("sourceMapPathOverrides") ||
 		SETTINGS_DEFAULT_PATH_OVERRIDES;
+
 	const webRoot =
 		config.webRoot || settings.get("webRoot") || SETTINGS_DEFAULT_WEB_ROOT;
 
 	let sourceMaps = SETTINGS_DEFAULT_SOURCE_MAPS;
+
 	if (typeof config.sourceMaps !== "undefined") {
 		sourceMaps = config.sourceMaps;
 	} else {
 		const settingsSourceMaps: boolean | undefined =
 			settings.get("sourceMaps");
+
 		if (typeof settingsSourceMaps !== "undefined") {
 			sourceMaps = settingsSourceMaps;
 		}
@@ -429,12 +456,14 @@ export function getRuntimeConfig(
 
 	// Resolve the paths with the webRoot set by the user
 	const resolvedOverrides: IStringDictionary<string> = {};
+
 	for (const pattern in sourceMapPathOverrides) {
 		if (sourceMapPathOverrides.hasOwnProperty(pattern)) {
 			const replacePattern = replaceWebRootInSourceMapPathOverridesEntry(
 				webRoot,
 				pattern,
 			);
+
 			const replacePatternValue =
 				replaceWebRootInSourceMapPathOverridesEntry(
 					webRoot,
@@ -464,6 +493,7 @@ export function replaceWebRootInSourceMapPathOverridesEntry(
 ) {
 	if (webRoot) {
 		const webRootIndex = entry.indexOf("${webRoot}");
+
 		if (webRootIndex === 0) {
 			return entry.replace("${webRoot}", webRoot);
 		}
@@ -494,11 +524,13 @@ export function applyPathMapping(
 		const rightPattern = pathMapping[leftPattern];
 
 		const asterisks = leftPattern.match(/\*/g) || [];
+
 		if (asterisks.length > 1) {
 			continue;
 		}
 
 		const replacePatternAsterisks = rightPattern.match(/\*/g) || [];
+
 		if (replacePatternAsterisks.length > asterisks.length) {
 			continue;
 		}
@@ -508,11 +540,15 @@ export function applyPathMapping(
 			leftPattern,
 			"/*",
 		);
+
 		const leftRegexSegment = escapedLeftPattern
 			.replace(/\*/g, "(.*)")
 			.replace(/\\\\/g, "/");
+
 		const leftRegex = new RegExp(`^${leftRegexSegment}$`, "i");
+
 		const overridePatternMatches = forwardSlashSourcePath.match(leftRegex);
+
 		if (!overridePatternMatches) {
 			continue;
 		}
@@ -520,6 +556,7 @@ export function applyPathMapping(
 		// Grab the value of the wildcard from the match above, replace the wildcard in the
 		// replacement pattern, and return the result.
 		const wildcardValue = overridePatternMatches[1];
+
 		let mappedPath = rightPattern.replace(/\*/g, wildcardValue);
 		mappedPath = debugCore.utils.properJoin(mappedPath); // Fix any ..'s
 		mappedPath = mappedPath.replace(

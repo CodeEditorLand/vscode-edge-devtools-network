@@ -96,6 +96,7 @@ export function activate(context: vscode.ExtensionContext) {
 			`${SETTINGS_VIEW_NAME}.attach`,
 			(target: CDPTarget) => {
 				telemetryReporter.sendTelemetryEvent("view/devtools");
+
 				const runtimeConfig = getRuntimeConfig();
 				DevToolsPanel.createOrShow(
 					context,
@@ -136,8 +137,10 @@ export async function attach(
 
 	// Get the attach target and keep trying until reaching timeout
 	const startTime = Date.now();
+
 	do {
 		let responseArray: any[] | undefined;
+
 		try {
 			// Keep trying to attach to the list endpoint until timeout
 			responseArray = await debugCore.utils.retryAsync(
@@ -159,11 +162,13 @@ export async function attach(
 
 			// Try to match the given target with the list of targets we received from the endpoint
 			let targetWebsocketUrl = "";
+
 			if (attachUrl) {
 				// Match the targets using the edge debug adapter logic
 				let matchedTargets:
 					| debugCore.chromeConnection.ITarget[]
 					| undefined;
+
 				try {
 					matchedTargets = debugCore.chromeUtils.getMatchingTargets(
 						responseArray,
@@ -200,6 +205,7 @@ export async function attach(
 					"command/attach/devtools",
 					telemetryProps,
 				);
+
 				const runtimeConfig = getRuntimeConfig(config);
 				DevToolsPanel.createOrShow(
 					context,
@@ -218,6 +224,7 @@ export async function attach(
 				// Create the list of items to show with fixed websocket addresses
 				const items = responseArray.map((i: IRemoteTargetJson) => {
 					i = fixRemoteWebSocket(hostname, port, i);
+
 					return {
 						description: i.url,
 						detail: i.webSocketDebuggerUrl,
@@ -227,11 +234,13 @@ export async function attach(
 
 				// Show the target list and allow the user to select one
 				const selection = await vscode.window.showQuickPick(items);
+
 				if (selection && selection.detail) {
 					telemetryReporter.sendTelemetryEvent(
 						"command/attach/devtools",
 						telemetryProps,
 					);
+
 					const runtimeConfig = getRuntimeConfig(config);
 					DevToolsPanel.createOrShow(
 						context,
@@ -264,14 +273,18 @@ export async function launch(
 
 	const { hostname, port, defaultUrl, userDataDir } =
 		getRemoteEndpointSettings(config);
+
 	const url = launchUrl || defaultUrl;
+
 	const target = await openNewTab(hostname, port, url);
+
 	if (target && target.webSocketDebuggerUrl) {
 		// Show the devtools
 		telemetryReporter.sendTelemetryEvent(
 			"command/launch/devtools",
 			telemetryProps,
 		);
+
 		const runtimeConfig = getRuntimeConfig(config);
 		DevToolsPanel.createOrShow(
 			context,
@@ -282,6 +295,7 @@ export async function launch(
 	} else {
 		// Launch a new instance
 		const browserPath = await getBrowserPath(config);
+
 		if (!browserPath) {
 			telemetryReporter.sendTelemetryEvent(
 				"command/launch/error/browser_not_found",
@@ -292,6 +306,7 @@ export async function launch(
 					"Ensure you have installed Microsoft Edge, " +
 					"or try specifying a custom path via the 'browserPath' setting.",
 			);
+
 			return;
 		} else {
 			// Here we grab the last part of the path (using either forward or back slashes to account for mac/win),
@@ -299,8 +314,11 @@ export async function launch(
 			// If it is one of those names we use that, otherwise we default it to "other".
 			// Then we upload just one of those 3 names to telemetry.
 			const exeName = browserPath.split(/\\|\//).pop();
+
 			const match = exeName!.match(/(chrome|edge)/gi) || [];
+
 			const knownBrowser = match.length > 0 ? match[0] : "other";
+
 			const browserProps = { exe: `${knownBrowser.toLowerCase()}` };
 			telemetryReporter.sendTelemetryEvent(
 				"command/launch/browser",

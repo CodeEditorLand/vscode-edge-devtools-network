@@ -61,6 +61,7 @@ export function initialize(dtWindow: IDevToolsWindow) {
 			parseMessageFromChannel(e.data, messageCallback);
 			e.preventDefault();
 			e.stopImmediatePropagation();
+
 			return false;
 		},
 		true,

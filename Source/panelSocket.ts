@@ -64,6 +64,7 @@ export class PanelSocket extends EventEmitter {
 			}
 
 			const { message } = JSON.parse(args);
+
 			if (message && message[0] === "{") {
 				if (!this.isConnected) {
 					// DevTools are sending a message before the real websocket has finished opening so cache it

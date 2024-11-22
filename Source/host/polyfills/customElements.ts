@@ -12,6 +12,7 @@ export function registerCustomElementOverride(
 ) {
 	// Replace the class definition with the custom elements v0 version
 	const code = definition.toString();
+
 	const classObjectDef = code
 		.replace(/super\(\);/g, "")
 		.replace(/constructor\(\)\s*{/g, "createdCallback() {");
@@ -26,6 +27,7 @@ export function registerCustomElementOverride(
 
 	return () => {
 		const obj = new construct();
+
 		return obj;
 	};
 }
@@ -36,6 +38,7 @@ export function applyUIUtilsPatch(content: string) {
 		`UI.registerCustomElement = ${registerCustomElementOverride.toString()};
         UI.deprecatedRegisterCustomElement = function`,
 	);
+
 	return newContent;
 }
 

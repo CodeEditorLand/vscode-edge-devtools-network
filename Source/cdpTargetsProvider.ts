@@ -40,11 +40,13 @@ export default class CDPTargetsProvider
 		if (!element) {
 			// Get a list of the targets available
 			const { hostname, port, useHttps } = getRemoteEndpointSettings();
+
 			const responseArray = await getListOfTargets(
 				hostname,
 				port,
 				useHttps,
 			);
+
 			if (Array.isArray(responseArray)) {
 				this.telemetryReporter.sendTelemetryEvent(
 					"view/list",

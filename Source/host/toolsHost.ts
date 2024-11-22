@@ -113,18 +113,21 @@ export default class ToolsHost {
 			case "getState": {
 				const { id, preferences } = JSON.parse(args);
 				this.fireGetStateCallback(id, preferences);
+
 				break;
 			}
 
 			case "getUrl": {
 				const { id, content } = JSON.parse(args);
 				this.fireGetUrlCallback(id, content);
+
 				break;
 			}
 
 			case "websocket": {
 				const { event, message } = JSON.parse(args);
 				this.fireWebSocketCallback(event, message);
+
 				break;
 			}
 		}

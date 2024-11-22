@@ -20,6 +20,7 @@ async function copyFile(srcDir: string, outDir: string, name: string) {
 async function copyStaticFiles(debugMode: boolean) {
 	// Copy the static css file to the out directory
 	const commonSrcDir = "./src/common/";
+
 	const commonOutDir = "./out/common/";
 	await fse.ensureDir(commonOutDir);
 	await copyFile(commonSrcDir, commonOutDir, "styles.css");
@@ -30,6 +31,7 @@ async function copyStaticFiles(debugMode: boolean) {
 	// See CONTRIBUTING.md for more details
 
 	const toolsSrcDir = `${process.env.EDGE_CHROMIUM_PATH}/third_party/devtools-frontend/src/front_end/`;
+
 	if (!isDirectory(toolsSrcDir)) {
 		throw new Error(
 			`Could not find Microsoft Edge (Chromium) DevTools path at '${toolsSrcDir}'. ` +
@@ -38,6 +40,7 @@ async function copyStaticFiles(debugMode: boolean) {
 	}
 
 	const toolsGenDir = `${process.env.EDGE_CHROMIUM_PATH}/out/${process.env.EDGE_CHROMIUM_OUT_DIR}/gen/devtools/`;
+
 	if (!isDirectory(toolsGenDir)) {
 		throw new Error(
 			`Could not find Microsoft Edge (Chromium) output path at '${toolsGenDir}'. ` +
@@ -109,6 +112,7 @@ async function patchFileForWebView(
 	// Ignore missing files
 	if (!(await fse.pathExists(file))) {
 		const template = `An expected file was not found: ${file}`;
+
 		throw new Error(template);
 	}
 
@@ -118,10 +122,12 @@ async function patchFileForWebView(
 	// Apply each patch in order
 	patches.forEach((patchFunction) => {
 		const patchResult: string | null = patchFunction(content, isRelease);
+
 		if (patchResult) {
 			content = patchResult;
 		} else {
 			const template = `An expected function was not patched correctly: ${patchFunction} on file: ${filename}`;
+
 			throw new Error(template);
 		}
 	});
@@ -140,6 +146,7 @@ function isDirectory(fullPath: string) {
 
 function main() {
 	let debugMode = false;
+
 	if (
 		process.argv &&
 		process.argv.length === 3 &&

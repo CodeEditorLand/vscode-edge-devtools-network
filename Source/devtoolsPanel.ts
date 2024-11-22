@@ -105,6 +105,7 @@ export class DevToolsPanel {
 
 		while (this.disposables.length) {
 			const d = this.disposables.pop();
+
 			if (d) {
 				d.dispose();
 			}
@@ -117,6 +118,7 @@ export class DevToolsPanel {
 			case "close":
 			case "error":
 				this.telemetryReporter.sendTelemetryEvent(`websocket/${e}`);
+
 				break;
 		}
 		encodeMessageForChannel(
@@ -156,6 +158,7 @@ export class DevToolsPanel {
 					undefined,
 					measures,
 				);
+
 				break;
 			}
 
@@ -167,6 +170,7 @@ export class DevToolsPanel {
 					`devtools/${telemetry.name}`,
 					properties,
 				);
+
 				break;
 			}
 
@@ -179,6 +183,7 @@ export class DevToolsPanel {
 					`devtools/${telemetry.name}`,
 					properties,
 				);
+
 				break;
 			}
 		}
@@ -186,6 +191,7 @@ export class DevToolsPanel {
 
 	private onSocketGetState(message: string) {
 		const { id } = JSON.parse(message) as { id: number };
+
 		const preferences: any =
 			this.context.workspaceState.get(SETTINGS_PREF_NAME) ||
 			SETTINGS_PREF_DEFAULTS;
@@ -202,6 +208,7 @@ export class DevToolsPanel {
 			name: string;
 			value: string;
 		};
+
 		const allPref: any =
 			this.context.workspaceState.get(SETTINGS_PREF_NAME) || {};
 		allPref[name] = value;
@@ -213,6 +220,7 @@ export class DevToolsPanel {
 		const request = JSON.parse(message) as { id: number; url: string };
 
 		let content = "";
+
 		try {
 			content = await fetchUri(request.url);
 		} catch {
@@ -249,6 +257,7 @@ export class DevToolsPanel {
 
 		// Convert the devtools url into a local one
 		let sourcePath = url;
+
 		if (this.config.sourceMaps) {
 			sourcePath = applyPathMapping(
 				sourcePath,
@@ -259,6 +268,7 @@ export class DevToolsPanel {
 		// Convert the local url to a workspace path
 		const transformer = new debugCore.UrlPathTransformer();
 		transformer.launch({ pathMapping: this.config.pathMapping });
+
 		const localSource = { path: sourcePath };
 		await transformer.fixSource(localSource);
 
@@ -266,6 +276,7 @@ export class DevToolsPanel {
 
 		// Convert the workspace path into a VS Code url
 		let uri: vscode.Uri | undefined;
+
 		try {
 			uri = vscode.Uri.file(sourcePath);
 		} catch {
@@ -303,16 +314,19 @@ export class DevToolsPanel {
 				"inspector.html",
 			),
 		);
+
 		const htmlUri = htmlPath.with({ scheme: "vscode-resource" });
 
 		const scriptPath = vscode.Uri.file(
 			path.join(this.extensionPath, "out", "host", "messaging.bundle.js"),
 		);
+
 		const scriptUri = scriptPath.with({ scheme: "vscode-resource" });
 
 		const stylesPath = vscode.Uri.file(
 			path.join(this.extensionPath, "out", "common", "styles.css"),
 		);
+
 		const stylesUri = stylesPath.with({ scheme: "vscode-resource" });
 
 		return `
