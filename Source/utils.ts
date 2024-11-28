@@ -53,20 +53,30 @@ export interface IStringDictionary<T> {
 export type Platform = "Windows" | "OSX" | "Linux";
 
 export const SETTINGS_STORE_NAME = "network-edge-devtools";
+
 export const SETTINGS_DEFAULT_USE_HTTPS = false;
+
 export const SETTINGS_DEFAULT_HOSTNAME = "localhost";
+
 export const SETTINGS_DEFAULT_PORT = 9222;
+
 export const SETTINGS_DEFAULT_URL = "about:blank";
+
 export const SETTINGS_WEBVIEW_NAME = "Network";
+
 export const SETTINGS_PREF_NAME = "devtools-preferences";
+
 export const SETTINGS_PREF_DEFAULTS = {
 	screencastEnabled: false,
 	uiTheme: '"dark"',
 };
+
 export const SETTINGS_VIEW_NAME = "network-edge-devtools-view";
+
 export const SETTINGS_DEFAULT_PATH_MAPPING: IStringDictionary<string> = {
 	"/": "${workspaceFolder}",
 };
+
 export const SETTINGS_DEFAULT_PATH_OVERRIDES: IStringDictionary<string> = {
 	"meteor://💻app/*": "${webRoot}/*",
 	"webpack:///*": "*",
@@ -74,10 +84,15 @@ export const SETTINGS_DEFAULT_PATH_OVERRIDES: IStringDictionary<string> = {
 	"webpack:///./~/*": "${webRoot}/node_modules/*",
 	"webpack:///src/*": "${webRoot}/*",
 };
+
 export const SETTINGS_DEFAULT_WEB_ROOT: string = "${workspaceFolder}";
+
 export const SETTINGS_DEFAULT_SOURCE_MAPS: boolean = true;
+
 export const SETTINGS_DEFAULT_EDGE_DEBUGGER_PORT: number = 2015;
+
 export const SETTINGS_DEFAULT_ATTACH_TIMEOUT: number = 10000;
+
 export const SETTINGS_DEFAULT_ATTACH_INTERVAL: number = 200;
 
 const WIN_APP_DATA = process.env.LOCALAPPDATA || "/";

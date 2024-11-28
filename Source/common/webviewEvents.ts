@@ -9,6 +9,7 @@ export type WebviewEvent =
 	| "setState"
 	| "telemetry"
 	| "websocket";
+
 export const webviewEventNames: WebviewEvent[] = [
 	"getState",
 	"getUrl",
@@ -20,6 +21,7 @@ export const webviewEventNames: WebviewEvent[] = [
 ];
 
 export type WebSocketEvent = "open" | "close" | "error" | "message";
+
 export const webSocketEventNames: WebSocketEvent[] = [
 	"open",
 	"close",
