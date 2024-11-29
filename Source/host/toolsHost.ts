@@ -13,7 +13,9 @@ import ToolsWebSocket from "./toolsWebSocket";
 
 export default class ToolsHost {
 	private resourceLoader: Readonly<ToolsResourceLoader> | undefined;
+
 	private getStateNextId: number = 0;
+
 	private getStateCallbacks: Map<number, (preferences: object) => void> =
 		new Map();
 
@@ -29,7 +31,9 @@ export default class ToolsHost {
 	public getPreferences(callback: (preferences: any) => void) {
 		// Load the preference via the extension workspaceState
 		const id = this.getStateNextId++;
+
 		this.getStateCallbacks.set(id, callback);
+
 		encodeMessageForChannel(
 			(msg) => window.parent.postMessage(msg, "*"),
 			"getState",
@@ -101,6 +105,7 @@ export default class ToolsHost {
 			url,
 			ignoreTabChanges,
 		};
+
 		encodeMessageForChannel(
 			(msg) => window.parent.postMessage(msg, "*"),
 			"openInEditor",
@@ -112,6 +117,7 @@ export default class ToolsHost {
 		switch (e) {
 			case "getState": {
 				const { id, preferences } = JSON.parse(args);
+
 				this.fireGetStateCallback(id, preferences);
 
 				break;
@@ -119,6 +125,7 @@ export default class ToolsHost {
 
 			case "getUrl": {
 				const { id, content } = JSON.parse(args);
+
 				this.fireGetUrlCallback(id, content);
 
 				break;
@@ -126,11 +133,13 @@ export default class ToolsHost {
 
 			case "websocket": {
 				const { event, message } = JSON.parse(args);
+
 				this.fireWebSocketCallback(event, message);
 
 				break;
 			}
 		}
+
 		return true;
 	}
 
@@ -146,6 +155,7 @@ export default class ToolsHost {
 	private fireGetStateCallback(id: number, preferences: object) {
 		if (this.getStateCallbacks.has(id)) {
 			this.getStateCallbacks.get(id)!(preferences);
+
 			this.getStateCallbacks.delete(id);
 		}
 	}

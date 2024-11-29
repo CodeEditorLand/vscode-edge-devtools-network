@@ -36,6 +36,7 @@ export function applyUIUtilsPatch(content: string) {
 	const newContent = content.replace(
 		/UI.registerCustomElement\s*=\s*function/g,
 		`UI.registerCustomElement = ${registerCustomElementOverride.toString()};
+
         UI.deprecatedRegisterCustomElement = function`,
 	);
 

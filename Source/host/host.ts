@@ -10,9 +10,13 @@ import ToolsWebSocket from "./toolsWebSocket";
 
 export interface IDevToolsWindow extends Window {
 	InspectorFrontendHost: ToolsHost;
+
 	WebSocket: typeof ToolsWebSocket;
+
 	Root: IRoot;
+
 	Runtime: IRuntimeResourceLoader;
+
 	_importScriptPathPrefix: string;
 }
 
@@ -27,6 +31,7 @@ export function initialize(dtWindow: IDevToolsWindow) {
 
 	// Create a mock sessionStorage since it doesn't exist in data url but the devtools use it
 	const sessionStorage = {};
+
 	Object.defineProperty(dtWindow, "sessionStorage", {
 		get() {
 			return sessionStorage;
@@ -48,6 +53,7 @@ export function initialize(dtWindow: IDevToolsWindow) {
 
 	// Setup the global objects that must exist at load time
 	dtWindow.InspectorFrontendHost = new ToolsHost();
+
 	dtWindow.WebSocket = ToolsWebSocket;
 
 	// Listen for messages from the extension and forward to the tools
@@ -55,11 +61,14 @@ export function initialize(dtWindow: IDevToolsWindow) {
 		dtWindow.InspectorFrontendHost.onMessageFromChannel.bind(
 			dtWindow.InspectorFrontendHost,
 		);
+
 	dtWindow.addEventListener(
 		"message",
 		(e) => {
 			parseMessageFromChannel(e.data, messageCallback);
+
 			e.preventDefault();
+
 			e.stopImmediatePropagation();
 
 			return false;
@@ -72,6 +81,7 @@ export function initialize(dtWindow: IDevToolsWindow) {
 		const resourceLoader = ToolsResourceLoader.overrideResourceLoading(
 			dtWindow.Root.Runtime,
 		);
+
 		dtWindow.InspectorFrontendHost.setResourceLoader(resourceLoader);
 
 		dtWindow._importScriptPathPrefix =

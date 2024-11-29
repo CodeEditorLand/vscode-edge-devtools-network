@@ -9,7 +9,9 @@ export interface IRuntimeResourceLoader {
 
 export default class ToolsResourceLoader {
 	private originalLoadResource: (url: string) => Promise<string>;
+
 	private urlLoadNextId: number = 0;
+
 	private urlLoadResolvers: Map<number, (url: string) => void> = new Map();
 
 	private constructor(
@@ -25,6 +27,7 @@ export default class ToolsResourceLoader {
 			if (resolve) {
 				resolve(content);
 			}
+
 			this.urlLoadResolvers.delete(id);
 		}
 	}
@@ -36,6 +39,7 @@ export default class ToolsResourceLoader {
 
 			return new Promise((resolve: (url: string) => void) => {
 				this.urlLoadResolvers.set(id, resolve);
+
 				encodeMessageForChannel(
 					(msg) => window.parent.postMessage(msg, "*"),
 					"getUrl",
@@ -54,6 +58,7 @@ export default class ToolsResourceLoader {
 
 		// Replace the loader promise with our override version so we can control cross domain requests
 		const loader = new ToolsResourceLoader(originalLoadResource);
+
 		loaderObject.loadResourcePromise = loader.loadResource.bind(loader);
 
 		return loader;

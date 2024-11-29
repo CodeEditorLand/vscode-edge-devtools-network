@@ -17,33 +17,51 @@ import DebugTelemetryReporter from "./debugTelemetryReporter";
 
 export interface IDevToolsSettings {
 	hostname: string;
+
 	port: number;
+
 	useHttps: boolean;
 
 	defaultUrl: string;
+
 	userDataDir: string;
+
 	timeout: number;
 }
 
 export interface IUserConfig {
 	url: string;
+
 	urlFilter: string;
+
 	browserPath: string;
+
 	hostname: string;
+
 	port: number;
+
 	useHttps: boolean;
+
 	userDataDir: string | boolean;
+
 	webRoot: string;
+
 	pathMapping: IStringDictionary<string>;
+
 	sourceMapPathOverrides: IStringDictionary<string>;
+
 	sourceMaps: boolean;
+
 	timeout: number;
 }
 
 export interface IRuntimeConfig {
 	pathMapping: IStringDictionary<string>;
+
 	sourceMapPathOverrides: IStringDictionary<string>;
+
 	sourceMaps: boolean;
+
 	webRoot: string;
 }
 export interface IStringDictionary<T> {
@@ -117,13 +135,21 @@ const OSX_MSEDGE_PATHS = [
 
 export interface IRemoteTargetJson {
 	[index: string]: string;
+
 	description: string;
+
 	devtoolsFrontendUrl: string;
+
 	faviconUrl: string;
+
 	id: string;
+
 	title: string;
+
 	type: string;
+
 	url: string;
+
 	webSocketDebuggerUrl: string;
 }
 
@@ -140,6 +166,7 @@ export function fetchUri(
 		const parsedUrl = url.parse(uri);
 
 		const get = parsedUrl.protocol === "https:" ? https.get : http.get;
+
 		options = {
 			rejectUnauthorized: false,
 			...parsedUrl,
@@ -148,9 +175,11 @@ export function fetchUri(
 
 		get(options, (response) => {
 			let responseData = "";
+
 			response.on("data", (chunk) => {
 				responseData += chunk.toString();
 			});
+
 			response.on("end", () => {
 				// Sometimes the 'error' event is not fired. Double check here.
 				if (response.statusCode === 200) {
@@ -185,12 +214,14 @@ export function fixRemoteWebSocket(
 
 		if (addressMatch) {
 			const replaceAddress = `${remoteAddress}:${remotePort}`;
+
 			target.webSocketDebuggerUrl = target.webSocketDebuggerUrl.replace(
 				addressMatch[1],
 				replaceAddress,
 			);
 		}
 	}
+
 	return target;
 }
 
@@ -233,6 +264,7 @@ export async function getListOfTargets(
 	} catch {
 		result = [];
 	}
+
 	return result;
 }
 
@@ -513,6 +545,7 @@ export function replaceWebRootInSourceMapPathOverridesEntry(
 			return entry.replace("${webRoot}", webRoot);
 		}
 	}
+
 	return entry;
 }
 
@@ -573,6 +606,7 @@ export function applyPathMapping(
 		const wildcardValue = overridePatternMatches[1];
 
 		let mappedPath = rightPattern.replace(/\*/g, wildcardValue);
+
 		mappedPath = debugCore.utils.properJoin(mappedPath); // Fix any ..'s
 		mappedPath = mappedPath.replace(
 			"${workspaceFolder}",

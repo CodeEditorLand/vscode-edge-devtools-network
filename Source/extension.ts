@@ -61,6 +61,7 @@ export function activate(context: vscode.ExtensionContext) {
 		"edge",
 		new LaunchDebugProvider(context, telemetryReporter, attach, launch),
 	);
+
 	vscode.debug.registerDebugConfigurationProvider(
 		"msedge",
 		new LaunchDebugProvider(context, telemetryReporter, attach, launch),
@@ -71,26 +72,31 @@ export function activate(context: vscode.ExtensionContext) {
 		context,
 		telemetryReporter,
 	);
+
 	context.subscriptions.push(
 		vscode.window.registerTreeDataProvider(
 			`${SETTINGS_VIEW_NAME}.targets`,
 			cdpTargetsProvider,
 		),
 	);
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
 			`${SETTINGS_VIEW_NAME}.launch`,
 			async () => {
 				await launch(context);
+
 				cdpTargetsProvider.refresh();
 			},
 		),
 	);
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand(`${SETTINGS_VIEW_NAME}.refresh`, () =>
 			cdpTargetsProvider.refresh(),
 		),
 	);
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
 			`${SETTINGS_VIEW_NAME}.attach`,
@@ -98,6 +104,7 @@ export function activate(context: vscode.ExtensionContext) {
 				telemetryReporter.sendTelemetryEvent("view/devtools");
 
 				const runtimeConfig = getRuntimeConfig();
+
 				DevToolsPanel.createOrShow(
 					context,
 					telemetryReporter,
@@ -107,6 +114,7 @@ export function activate(context: vscode.ExtensionContext) {
 			},
 		),
 	);
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand(
 			`${SETTINGS_VIEW_NAME}.copyItem`,
@@ -130,6 +138,7 @@ export async function attach(
 		viaConfig: `${!!config}`,
 		withTargetUrl: `${!!attachUrl}`,
 	};
+
 	telemetryReporter.sendTelemetryEvent("command/attach", telemetryProps);
 
 	const { hostname, port, useHttps, timeout } =
@@ -188,6 +197,7 @@ export async function attach(
 						port,
 						matchedTargets[0] as any,
 					);
+
 					targetWebsocketUrl = actualTarget.webSocketDebuggerUrl;
 				}
 
@@ -201,12 +211,14 @@ export async function attach(
 			if (targetWebsocketUrl) {
 				// Auto connect to found target
 				useRetry = false;
+
 				telemetryReporter.sendTelemetryEvent(
 					"command/attach/devtools",
 					telemetryProps,
 				);
 
 				const runtimeConfig = getRuntimeConfig(config);
+
 				DevToolsPanel.createOrShow(
 					context,
 					telemetryReporter,
@@ -242,6 +254,7 @@ export async function attach(
 					);
 
 					const runtimeConfig = getRuntimeConfig(config);
+
 					DevToolsPanel.createOrShow(
 						context,
 						telemetryReporter,
@@ -269,6 +282,7 @@ export async function launch(
 	}
 
 	const telemetryProps = { viaConfig: `${!!config}` };
+
 	telemetryReporter.sendTelemetryEvent("command/launch", telemetryProps);
 
 	const { hostname, port, defaultUrl, userDataDir } =
@@ -286,6 +300,7 @@ export async function launch(
 		);
 
 		const runtimeConfig = getRuntimeConfig(config);
+
 		DevToolsPanel.createOrShow(
 			context,
 			telemetryReporter,
@@ -301,6 +316,7 @@ export async function launch(
 				"command/launch/error/browser_not_found",
 				telemetryProps,
 			);
+
 			vscode.window.showErrorMessage(
 				"Microsoft Edge could not be found. " +
 					"Ensure you have installed Microsoft Edge, " +
@@ -320,6 +336,7 @@ export async function launch(
 			const knownBrowser = match.length > 0 ? match[0] : "other";
 
 			const browserProps = { exe: `${knownBrowser.toLowerCase()}` };
+
 			telemetryReporter.sendTelemetryEvent(
 				"command/launch/browser",
 				browserProps,
@@ -327,6 +344,7 @@ export async function launch(
 		}
 
 		launchBrowser(browserPath, port, url, userDataDir);
+
 		await attach(context, url, config);
 	}
 }

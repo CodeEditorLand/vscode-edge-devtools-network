@@ -18,13 +18,17 @@ interface IMessageEvent {
  */
 export default class ToolsWebSocket {
 	private static devtoolsWebSocket: ToolsWebSocket;
+
 	public static get instance() {
 		return ToolsWebSocket.devtoolsWebSocket;
 	}
 
 	public onopen: (() => void) | undefined;
+
 	public onclose: (() => void) | undefined;
+
 	public onerror: (() => void) | undefined;
+
 	public onmessage: ((e: IMessageEvent) => void) | undefined;
 
 	constructor(url: string) {
@@ -51,18 +55,21 @@ export default class ToolsWebSocket {
 				if (this.onopen) {
 					this.onopen();
 				}
+
 				break;
 
 			case "close":
 				if (this.onclose) {
 					this.onclose();
 				}
+
 				break;
 
 			case "error":
 				if (this.onerror) {
 					this.onerror();
 				}
+
 				break;
 
 			default:
@@ -70,6 +77,7 @@ export default class ToolsWebSocket {
 				if (this.onmessage && message) {
 					this.onmessage({ data: message });
 				}
+
 				break;
 		}
 	}

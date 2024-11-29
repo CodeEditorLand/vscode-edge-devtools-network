@@ -17,9 +17,13 @@ export type IDevToolsPostMessageCallback = (
 
 export class PanelSocket extends EventEmitter {
 	private readonly targetUrl: string;
+
 	private readonly postMessageToDevTools: IDevToolsPostMessageCallback;
+
 	private socket: WebSocket | undefined;
+
 	private isConnected: boolean = false;
+
 	private messages: string[] = [];
 
 	constructor(
@@ -27,7 +31,9 @@ export class PanelSocket extends EventEmitter {
 		postMessageToDevTools: IDevToolsPostMessageCallback,
 	) {
 		super();
+
 		this.targetUrl = targetUrl;
+
 		this.postMessageToDevTools = postMessageToDevTools;
 	}
 
@@ -44,7 +50,9 @@ export class PanelSocket extends EventEmitter {
 	public dispose() {
 		if (this.socket) {
 			this.isConnected = false;
+
 			this.socket.close();
+
 			this.socket = undefined;
 		}
 	}
@@ -82,9 +90,13 @@ export class PanelSocket extends EventEmitter {
 	private connectToTarget() {
 		// Create the websocket
 		this.socket = new WebSocket(this.targetUrl);
+
 		this.socket.onopen = () => this.onOpen();
+
 		this.socket.onmessage = (ev) => this.onMessage(ev);
+
 		this.socket.onerror = () => this.onError();
+
 		this.socket.onclose = () => this.onClose();
 	}
 
@@ -98,6 +110,7 @@ export class PanelSocket extends EventEmitter {
 			for (const message of this.messages) {
 				this.socket.send(message);
 			}
+
 			this.messages = [];
 		}
 	}
@@ -120,6 +133,7 @@ export class PanelSocket extends EventEmitter {
 		if (this.isConnected) {
 			// Tell the devtools that the real websocket was closed
 			this.postMessageToDevTools("close");
+
 			this.emit("close");
 		}
 

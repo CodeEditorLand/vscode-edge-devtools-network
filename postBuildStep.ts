@@ -22,7 +22,9 @@ async function copyStaticFiles(debugMode: boolean) {
 	const commonSrcDir = "./src/common/";
 
 	const commonOutDir = "./out/common/";
+
 	await fse.ensureDir(commonOutDir);
+
 	await copyFile(commonSrcDir, commonOutDir, "styles.css");
 
 	// Must set environment variables EDGE_CHROMIUM_PATH and EDGE_CHROMIUM_OUT_DIR
@@ -52,7 +54,9 @@ async function copyStaticFiles(debugMode: boolean) {
 
 	// Copy the devtools to the out directory
 	const toolsOutDir = "./out/tools/front_end/";
+
 	await fse.ensureDir(toolsOutDir);
+
 	await fse.copy(toolsSrcDir, toolsOutDir);
 
 	// Copy the devtools generated files to the out directory
@@ -61,6 +65,7 @@ async function copyStaticFiles(debugMode: boolean) {
 	// Copy the optional devtools resource files to the out directory
 	if (isDirectory(toolsResDir)) {
 		await copyFile(toolsResDir, toolsOutDir, "InspectorBackendCommands.js");
+
 		await copyFile(toolsResDir, toolsOutDir, "SupportedCSSProperties.js");
 	}
 
@@ -72,16 +77,20 @@ async function patchFilesForWebView(toolsOutDir: string, debugMode: boolean) {
 	if (!debugMode) {
 		// tslint:disable-next-line:no-console
 		console.log("Patching files for release version");
+
 		await patchFileForWebView("shell.js", toolsOutDir, true, [
 			applyInspectorCommonCssPatch,
 		]);
+
 		await patchFileForWebView("inspector.html", toolsOutDir, true, [
 			applyContentSecurityPolicyPatch,
 		]);
+
 		await patchFileForWebView("ui/TabbedPane.js", toolsOutDir, false, [
 			applySelectTabPatch,
 			applyShowTabElement,
 		]);
+
 		await patchFileForWebView("ui/InspectorView.js", toolsOutDir, false, [
 			applyDrawerTabLocationPatch,
 			applyMainTabTabLocationPatch,
@@ -90,10 +99,12 @@ async function patchFilesForWebView(toolsOutDir: string, debugMode: boolean) {
 		await patchFileForWebView("inspector.html", toolsOutDir, true, [
 			applyContentSecurityPolicyPatch,
 		]);
+
 		await patchFileForWebView("ui/TabbedPane.js", toolsOutDir, false, [
 			applySelectTabPatch,
 			applyShowTabElement,
 		]);
+
 		await patchFileForWebView("ui/InspectorView.js", toolsOutDir, false, [
 			applyDrawerTabLocationPatch,
 			applyMainTabTabLocationPatch,

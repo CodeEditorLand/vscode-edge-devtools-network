@@ -40,20 +40,27 @@ export interface ITelemetryProps {
 
 export interface ITelemetryDataNumber {
 	event: "enumerated" | "performance";
+
 	name: string;
+
 	data: number;
 }
 export interface ITelemetryDataObject {
 	event: "error";
+
 	name: string;
+
 	data: object;
 }
 export type TelemetryData = ITelemetryDataNumber | ITelemetryDataObject;
 
 export interface IOpenEditorData {
 	url: string;
+
 	line: number;
+
 	column: number;
+
 	ignoreTabChanges: boolean;
 }
 
@@ -92,5 +99,6 @@ export function encodeMessageForChannel(
 	args?: object,
 ) {
 	const message = `${eventType}:${JSON.stringify(args)}`;
+
 	postMessageCallback(message);
 }

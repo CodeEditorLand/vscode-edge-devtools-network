@@ -16,8 +16,11 @@ export default class CDPTargetsProvider
 	implements vscode.TreeDataProvider<CDPTarget>
 {
 	public readonly onDidChangeTreeData: vscode.Event<CDPTarget | undefined>;
+
 	private changeDataEvent: vscode.EventEmitter<CDPTarget | undefined>;
+
 	private extensionPath: string;
+
 	private telemetryReporter: Readonly<TelemetryReporter>;
 
 	constructor(
@@ -25,8 +28,11 @@ export default class CDPTargetsProvider
 		telemetryReporter: Readonly<TelemetryReporter>,
 	) {
 		this.changeDataEvent = new vscode.EventEmitter<CDPTarget | undefined>();
+
 		this.onDidChangeTreeData = this.changeDataEvent.event;
+
 		this.extensionPath = context.extensionPath;
+
 		this.telemetryReporter = telemetryReporter;
 	}
 
@@ -60,6 +66,7 @@ export default class CDPTargetsProvider
 						port,
 						target,
 					);
+
 					targets.push(
 						new CDPTarget(actualTarget, "", this.extensionPath),
 					);
@@ -93,6 +100,7 @@ export default class CDPTargetsProvider
 
 	public refresh(): void {
 		this.telemetryReporter.sendTelemetryEvent("view/refresh");
+
 		this.changeDataEvent.fire();
 	}
 }

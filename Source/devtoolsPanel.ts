@@ -27,13 +27,21 @@ import {
 
 export class DevToolsPanel {
 	private static instance: DevToolsPanel | undefined;
+
 	private readonly config: IRuntimeConfig;
+
 	private readonly context: vscode.ExtensionContext;
+
 	private readonly disposables: vscode.Disposable[] = [];
+
 	private readonly extensionPath: string;
+
 	private readonly panel: vscode.WebviewPanel;
+
 	private readonly telemetryReporter: Readonly<TelemetryReporter>;
+
 	private readonly targetUrl: string;
+
 	private panelSocket: PanelSocket;
 
 	private constructor(
@@ -44,25 +52,38 @@ export class DevToolsPanel {
 		config: IRuntimeConfig,
 	) {
 		this.panel = panel;
+
 		this.context = context;
+
 		this.telemetryReporter = telemetryReporter;
+
 		this.extensionPath = this.context.extensionPath;
+
 		this.targetUrl = targetUrl;
+
 		this.config = config;
 
 		// Hook up the socket events
 		this.panelSocket = new PanelSocket(this.targetUrl, (e, msg) =>
 			this.postToDevTools(e, msg),
 		);
+
 		this.panelSocket.on("ready", () => this.onSocketReady());
+
 		this.panelSocket.on("websocket", () => this.onSocketMessage());
+
 		this.panelSocket.on("telemetry", (msg) => this.onSocketTelemetry(msg));
+
 		this.panelSocket.on("getState", (msg) => this.onSocketGetState(msg));
+
 		this.panelSocket.on("setState", (msg) => this.onSocketSetState(msg));
+
 		this.panelSocket.on("getUrl", (msg) => this.onSocketGetUrl(msg));
+
 		this.panelSocket.on("openInEditor", (msg) =>
 			this.onSocketOpenInEditor(msg),
 		);
+
 		this.panelSocket.on("close", () => this.onSocketClose());
 
 		// Handle closing
@@ -99,6 +120,7 @@ export class DevToolsPanel {
 		DevToolsPanel.instance = undefined;
 
 		this.panel.dispose();
+
 		this.panelSocket.dispose();
 
 		this.telemetryReporter.sendTelemetryEvent("websocket/dispose");
@@ -121,6 +143,7 @@ export class DevToolsPanel {
 
 				break;
 		}
+
 		encodeMessageForChannel(
 			(msg) => this.panel.webview.postMessage(msg),
 			"websocket",
@@ -152,7 +175,9 @@ export class DevToolsPanel {
 		switch (telemetry.event) {
 			case "performance": {
 				const measures: ITelemetryMeasures = {};
+
 				measures[`${telemetry.name}.duration`] = telemetry.data;
+
 				this.telemetryReporter.sendTelemetryEvent(
 					`devtools/${telemetry.name}`,
 					undefined,
@@ -164,8 +189,10 @@ export class DevToolsPanel {
 
 			case "enumerated": {
 				const properties: ITelemetryProps = {};
+
 				properties[`${telemetry.name}.actionCode`] =
 					telemetry.data.toString();
+
 				this.telemetryReporter.sendTelemetryEvent(
 					`devtools/${telemetry.name}`,
 					properties,
@@ -176,9 +203,11 @@ export class DevToolsPanel {
 
 			case "error": {
 				const properties: ITelemetryProps = {};
+
 				properties[`${telemetry.name}.info`] = JSON.stringify(
 					telemetry.data,
 				);
+
 				this.telemetryReporter.sendTelemetryEvent(
 					`devtools/${telemetry.name}`,
 					properties,
@@ -195,6 +224,7 @@ export class DevToolsPanel {
 		const preferences: any =
 			this.context.workspaceState.get(SETTINGS_PREF_NAME) ||
 			SETTINGS_PREF_DEFAULTS;
+
 		encodeMessageForChannel(
 			(msg) => this.panel.webview.postMessage(msg),
 			"getState",
@@ -206,12 +236,15 @@ export class DevToolsPanel {
 		// Parse the preference from the message and store it
 		const { name, value } = JSON.parse(message) as {
 			name: string;
+
 			value: string;
 		};
 
 		const allPref: any =
 			this.context.workspaceState.get(SETTINGS_PREF_NAME) || {};
+
 		allPref[name] = value;
+
 		this.context.workspaceState.update(SETTINGS_PREF_NAME, allPref);
 	}
 
@@ -267,9 +300,11 @@ export class DevToolsPanel {
 
 		// Convert the local url to a workspace path
 		const transformer = new debugCore.UrlPathTransformer();
+
 		transformer.launch({ pathMapping: this.config.pathMapping });
 
 		const localSource = { path: sourcePath };
+
 		await transformer.fixSource(localSource);
 
 		sourcePath = localSource.path || sourcePath;
@@ -290,6 +325,7 @@ export class DevToolsPanel {
 		// Finally open the document if it exists
 		if (uri) {
 			const doc = await vscode.workspace.openTextDocument(uri);
+
 			vscode.window.showTextDocument(doc, {
 				preserveFocus: true,
 				selection: new vscode.Range(line, column, line, column),
@@ -336,8 +372,11 @@ export class DevToolsPanel {
                 <meta http-equiv="content-type" content="text/html; charset=utf-8">
                 <meta http-equiv="Content-Security-Policy"
                     content="default-src 'none';
+
                     frame-src vscode-resource:;
+
                     script-src vscode-resource:;
+
                     style-src vscode-resource:;">
                 <link href="${stylesUri}" rel="stylesheet"/>
                 <script src="${scriptUri}"></script>

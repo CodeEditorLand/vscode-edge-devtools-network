@@ -8,10 +8,15 @@ import { IRemoteTargetJson } from "./utils";
 
 export default class CDPTarget extends vscode.TreeItem {
 	public readonly targetJson: IRemoteTargetJson;
+
 	public readonly propertyName: string;
+
 	public readonly iconPath: { dark: string; light: string } | undefined;
+
 	public readonly contextValue: "cdpTarget" | "cdpTargetProperty";
+
 	private readonly extensionPath: string | undefined;
+
 	private children: CDPTarget[] = [];
 
 	public get description(): string {
@@ -19,9 +24,11 @@ export default class CDPTarget extends vscode.TreeItem {
 			? this.targetJson[this.propertyName]
 			: this.targetJson.url;
 	}
+
 	public get tooltip(): string {
 		return `${this.label} - ${this.description}`;
 	}
+
 	public get websocketUrl(): string {
 		return this.targetJson.webSocketDebuggerUrl;
 	}
@@ -37,9 +44,13 @@ export default class CDPTarget extends vscode.TreeItem {
 				? vscode.TreeItemCollapsibleState.None
 				: vscode.TreeItemCollapsibleState.Collapsed,
 		);
+
 		this.targetJson = targetJson;
+
 		this.propertyName = propertyName;
+
 		this.extensionPath = extensionPath;
+
 		this.contextValue = this.propertyName
 			? "cdpTargetProperty"
 			: "cdpTarget";
@@ -47,6 +58,7 @@ export default class CDPTarget extends vscode.TreeItem {
 		// Get the icon for this type of target
 		if (this.extensionPath) {
 			const icon = `${this.targetJson.type}.svg`;
+
 			this.iconPath = {
 				dark: path.join(this.extensionPath, "resources", "dark", icon),
 				light: path.join(
