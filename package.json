@@ -384,9 +384,9 @@
 	},
 	"devDependencies": {
 		"@types/fs-extra": "11.0.4",
-		"@types/node": "22.10.6",
+		"@types/node": "22.10.7",
 		"@types/ws": "8.5.13",
-		"fs-extra": "11.2.0",
+		"fs-extra": "11.3.0",
 		"ts-loader": "9.5.2"
 	},
 	"icon": "icon.png",
